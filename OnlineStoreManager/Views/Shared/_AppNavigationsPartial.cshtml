@@ -1,0 +1,108 @@
+﻿@using OnlineStoreManager.Infracstructure
+@inject IPageMaster PageMaster
+
+<div id="_app_icon">
+   <div class="flex_center" style="height:58px;">
+      <img src="/icons/app.svg" style="height: 32px;margin-right: 14px;" />
+      <h5> EcomManager </h5>
+   </div>
+</div>
+
+
+<script hide>
+   var appIcon = htmlToString("#_app_icon", true);
+
+   $().w2layout({
+      name: '_app_navigations',
+      panels: [
+         {
+            type: 'top', size: 60, style: panelStyle, content: appIcon   // app icon, size = header
+         },
+         {
+            type: 'main', style: "padding-top:40px;"
+         },
+      ]
+   });
+
+   $().w2sidebar({
+      name: '_navigations_main',
+      style: panelStyle,
+      nodes: [
+         {
+            id: 'level-0', text: '@PageMaster.GetPageName(PageName.Summary)', img: 'icon-folder', expanded: true, group: true,
+            nodes: [
+               {
+                  id: 'level-0-1', text: '@PageMaster.GetTabName(TabName.Revenue)',
+                  selected: @(ViewBag.TabName == TabName.Revenue ? "true" : "false"),
+                  onClick: () => window.location = '/Report/Revenue',
+               },
+               {
+                  id: 'level-0-2', text: '@PageMaster.GetTabName(TabName.Spending)',
+                  selected: @(ViewBag.TabName == TabName.Spending ? "true" : "false"),
+                  onClick: () => window.location = '/Product/Spending',
+               },
+            ]
+         },
+         {
+            id: 'level-1', text: '@PageMaster.GetPageName(PageName.Order)', img: 'icon-folder', expanded: true, group: true,
+            nodes: [
+               {
+                  id: 'level-1-1', text: '@PageMaster.GetTabName(TabName.Order)',
+                  selected: @(ViewBag.TabName == TabName.Order ? "true" : "false"),
+                  onClick: () => window.location = '/Order/Index',
+               },
+            ]
+         },
+         {
+            id: 'level-2', text: '@PageMaster.GetPageName(PageName.Inventory)', img: 'icon-folder', expanded: true, group: true,
+            nodes: [
+               {
+                  id: 'level-2-1', text: '@PageMaster.GetTabName(TabName.ImportOrder)',
+                  selected: @(ViewBag.TabName == TabName.ImportOrder ? "true" : "false"),
+                  onClick: () => window.location = '/Inventory/Index?TabName=@TabName.ImportOrder',
+               },
+               {
+                  id: 'level-2-2', text: '@PageMaster.GetTabName(TabName.Stock)',
+                  selected: @(ViewBag.TabName == TabName.Stock ? "true" : "false"),
+                  onClick: () => window.location = '/Inventory/Index?TabName=@TabName.Stock',
+               },
+               {
+                  id: 'level-2-3', text: '@PageMaster.GetTabName(TabName.Warehouse)',
+                  selected: @(ViewBag.TabName == TabName.Warehouse ? "true" : "false"),
+                  onClick: () => window.location = '/Inventory/Index?TabName=@TabName.Warehouse',
+               }
+            ]
+         },
+         {
+            id: 'level-3', text: '@PageMaster.GetPageName(PageName.Product)', img: 'icon-folder', expanded: true, group: true,
+            nodes: [
+               {
+                  id: 'level-3-1', text: '@PageMaster.GetTabName(TabName.Product)',
+                  selected: @(ViewBag.TabName == TabName.Product ? "true" : "false"),
+                  onClick: () => window.location = '/Product/Index?TabName=@TabName.Product',
+               },
+               {
+                  id: 'level-3-2', text: '@PageMaster.GetTabName(TabName.Category)',
+                  selected: @(ViewBag.TabName == TabName.Category ? "true" : "false"),
+                  onClick: () => window.location = '/Product/Index?TabName=@TabName.Category',
+               },
+               {
+                  id: 'level-3-3', text: '@PageMaster.GetTabName(TabName.Supplier)',
+                  selected: @(ViewBag.TabName == TabName.Supplier ? "true" : "false"),
+                  onClick: () => window.location = '/Product/Index?TabName=@TabName.Supplier',
+               }
+            ]
+         },
+         {
+            id: 'level-4', text: '@PageMaster.GetPageName(PageName.Admin)', img: 'icon-folder', expanded: true, group: true,
+            nodes: [
+               { id: 'level-4-1', text: '@PageMaster.GetTabName(TabName.Account)', },
+            ]
+         },
+      ]
+   });
+
+   w2ui['_app_navigations'].content('main', w2ui['_navigations_main']);
+
+   w2ui['_layout'].content('left', w2ui['_app_navigations']);
+</script>

@@ -1,0 +1,37 @@
+﻿<div class="flex_center" style="padding:8px 14px;justify-content:flex-start;">
+   
+   <span class="bold_span"> Tổng số:</span>
+   <span class="italic_span" style="margin-left: 14px;"> @(Model.TotalItems??0) </span>
+
+   <div class="flex_center" style="background-color:inherit;margin-left:auto">
+      <span class="pagination_item clickable" onclick="PAGINATION.loadPrevPages()">
+         <img src="~/icons/back.svg" class="small_icon" style="margin-bottom:-2px;" />
+      </span>
+
+      <div id="_pagination_container">
+
+         @{ 
+             int totalPage = (int)Math.Ceiling((double)Model.TotalItems/ (double)Model.PageSize);
+             totalPage = (totalPage > 0) ? totalPage : 1;
+         }
+         @{
+            int pageOffset = 5,
+                  currentOffset = (int)Math.Ceiling((double)Model.CurrentPage / (double)pageOffset) - 1;
+            currentOffset = (currentOffset < 0) ? 0 : currentOffset;
+
+            int start = (currentOffset * pageOffset) + 1;
+            for (int i = start; i <= start + 4 && i <= totalPage; ++i)
+            {
+               string isActive = (Model.CurrentPage == i) ? "active" : "";
+               <span class="pagination_item @isActive clickable"
+                     extend_query="CurrentPage" query="@i"
+                     submit_on_click>  @i  </span>
+            }
+         }
+      </div>
+
+      <span class="pagination_item clickable" onclick="PAGINATION.loadNextPages()">
+         <img src="~/icons/back.svg" class="small_icon" style="margin-bottom:-2px;transform:rotate(180deg)" />
+      </span>
+   </div>
+</div>

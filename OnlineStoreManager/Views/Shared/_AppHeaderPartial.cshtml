@@ -1,0 +1,41 @@
+﻿@using OnlineStoreManager.Infracstructure
+@inject IPageMaster PageMaster
+
+<div id="_app_header">
+   <div class="flex_center" style="height:58px;padding: 0 14px;justify-content:flex-end;">
+      <div style="font-size:14px;font-weight: bold;margin-right:auto;">
+         @PageMaster.GetPageName()
+         <span style="font-weight:400;margin: 0 14px;"> / </span> 
+         @PageMaster.GetTabName()
+      </div>
+
+      <div class="app_noti">
+         <img class="medium_icon" src="/icons/bell.svg"/>
+         <span class="noti_counter"> 3 </span>
+      </div>
+
+      <div style="margin-left: 18px;">
+         <span style=""> Van Huu - Admin </span>
+      </div>
+
+      <div style="margin-left: 18px;">
+         <a href="./" style="font-style:italic"> Log out </a>
+      </div>
+   </div>
+</div>
+
+
+<script hide>
+
+   var headerContent = htmlToString("#_app_header");
+   $().w2layout({
+      name: '_app_header',
+      panels: [
+         { type: 'main', style: panelStyle, content: headerContent },
+      ]
+   });
+
+   w2ui['_page_main'].content('top', w2ui['_app_header']);
+
+
+</script>

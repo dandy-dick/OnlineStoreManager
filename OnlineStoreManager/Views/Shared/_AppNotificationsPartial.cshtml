@@ -1,0 +1,30 @@
+﻿
+<div id="_app_notifications">
+   <div class="flex_center">
+      <div style="padding: 14px;
+      font-size: 14px;
+      font-style: italic;
+      color: orangered;
+      text-overflow: ellipsis;overflow:hidden;white-space:nowrap;
+   ">
+         Warning!!: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </div>
+      <div style="width:100px;margin-left: 14px;font-style:italic;font-size:14px;">
+         Xem thêm
+      </div>
+   </div>
+</div>
+
+
+<script hide>
+   var appNotiContent = htmlToString('#_app_notifications', true);
+
+   $().w2layout({
+      name: '_app_notifications',
+      panels: [
+         { type: 'top', content: appNotiContent, style: panelStyle },
+      ]
+   });
+
+   w2ui['_main_content'].content('top', w2ui['_app_notifications']);
+</script>

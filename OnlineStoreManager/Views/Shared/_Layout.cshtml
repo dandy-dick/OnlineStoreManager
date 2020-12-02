@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title> OnlineStoreManager</title>
+
+   <link href="~/css/site.css" rel="stylesheet" />
+   <link href="~/lib/w2ui/w2ui-1.5.rc1.min.css" rel="stylesheet"  asp-append-version="true"/>
+
+   @RenderSection("StyleSheets", required: false)
+
+</head>
+<body>
+   <script src="~/lib/jquery/dist/jquery.min.js"></script>
+   <script src="~/lib/w2ui/w2ui-1.5.rc1.min.js"></script>
+   <script src="~/js/site.js" asp-append-version="true"></script>
+
+   <div id="_layout" style="width:100vw;height:100vh;overflow:hidden"></div>
+
+   <script>
+
+      var panelStyle = `
+               border: 1px solid #c5c5c5;
+               background-image: linear-gradient(#f9f9f9,#e4e4e4);
+            `;
+
+   </script>
+
+   <script hide>
+      $('#_layout').w2layout({
+         name: '_layout',
+         panels: [
+            { type: 'left', size: "15%" },   // for navigation section
+            { type: 'main' }  // for app content
+         ]
+      });
+
+      $().w2layout({
+         name: '_page_main',
+         panels: [
+            { type: 'top', size: 60 },     // for header section
+            { type: 'main' }     // for app content
+         ]
+      });
+      w2ui['_layout'].content('main', w2ui['_page_main']);
+
+      $().w2layout({
+         name: '_main_content',
+         panels: [
+            { type: 'top', size: 44 },  // for app notifications
+            { type: 'main' },    // for w2grid
+         ]
+      });
+      w2ui['_page_main'].content('main', w2ui['_main_content']);
+
+   </script>
+
+   @Html.Partial("_AppNavigationsPartial")
+   @Html.Partial("_AppHeaderPartial")
+   @Html.Partial("_AppNotificationsPartial")
+
+   @RenderBody()
+
+   @RenderSection("ViewScripts", required: false)
+
+   <script hide>
+      // load dữ liệu cho grid lần đầu
+      setTimeout(() => {
+         w2ui['_grid'].refresh();
+         hideScripts();
+         window.extendQuery = extendQuery();
+      }, 500);
+   </script>
+</body>
+</html>
