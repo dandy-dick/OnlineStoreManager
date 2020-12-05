@@ -1,11 +1,11 @@
-﻿/* lấy mã nguồn bên trong 1 wrapper và trả về dạng string, remove khỏi DOM nếu cần */
+﻿
+/* lấy mã nguồn bên trong 1 wrapper và trả về dạng string, remove khỏi DOM nếu cần */
 function htmlToString(wrapper, remove = false) {
     var elementStr = $(wrapper);
     if (remove)
         $(wrapper).remove();
     return elementStr;
 }
-
 
 /* Hide all script that have attribute name = attrName (or hide) */
 function hideScripts(attrName) {
@@ -121,5 +121,61 @@ function _w2uiPagination(currentPage = 1, totalItems = 0, pageSize = 20) {
             this.start = this.currentOffset * this.pageOffset + 1;
             this.updatePagination();
         }
+    }
+}
+
+
+
+/**
+ * Trả về w2ui form options từ mã nguồn HTML
+ * 
+ * @param {any} htmlData
+ * @param {any} formName
+ */
+function w2uiFormFromHtml(htmlData, formName) {
+    // create Jquery DOM Element from HtmlData
+    var formEl = $(htmlData);
+    var fieldEls = $(formEl).find('input[w2field],textarea[w2field]');
+
+    // create fields html
+    var _fields = [],
+        _record = {};
+    fieldEls.each(function (i, el) {
+        var type = $(el).attr('w2field');
+        switch (type) {
+            case 'text':
+            case 'int': {
+                _fields.push({
+                    name: $(el).attr('name'), type: type,
+                });
+                _record[$(el).attr('name')] = $(el).attr('value');
+
+                break;
+            }
+            case 'textarea': {
+                _fields.push({
+                    name: $(el).attr('name'), type: 'textarea',
+                });
+                _record[$(el).attr('name')] = $(el).attr('value');
+
+                break;
+            }
+            case 'list': {
+                _fields.push({
+                    name: $(el).attr('name'), type: type,
+                    options: {
+                        url: $(el).attr('url'), minLength:0, // must set 0
+                    },
+                });
+                _record[$(el).attr('name')] = $(el).attr('value');
+                break
+            }
+        }
+    });
+
+    return {
+        name: formName,
+        fields: _fields,
+        record: _record
     }
 }

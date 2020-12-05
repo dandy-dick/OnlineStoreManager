@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OnlineStoreManager.Database;
 using OnlineStoreManager.Database.Models;
 using OnlineStoreManager.Infracstructure;
@@ -44,5 +44,85 @@ namespace OnlineStoreManager.Repository
                 return db.Suppliers.ToList();
             }
         }
+
+        public Result DeleteAll<TTable>(int[] ids) where TTable: class, new()
+        {
+            Type tableType = typeof(TTable);
+            using (var db = new EcomContext())
+            {
+                // delete all entity matched id
+                foreach (var id in ids)
+                {
+                    var entity = db.Set<TTable>().AsEnumerable()
+                        .FirstOrDefault(p => (int)(p as TTable).GetPropertyValue("Id") == id);
+                    if (entity != null)
+                    {
+                        try
+                        {
+                            db.Set<TTable>().Remove(entity);
+                        }
+                        catch (Exception e)
+                        {
+                            return Result.Fail(e.Message);
+                        }
+                    }
+                }
+
+                bool isCreated = db.SaveChanges() > 0;
+                if (isCreated)
+                    return Result.Success();
+                return Result.Fail("Đã có lỗi xảy ra");
+            }
+        }
+
+        public Result InsertInto<TTable>(TTable model) where TTable : class
+        {
+            using (var db = new EcomContext())
+            {
+                try
+                {
+                    db.Set<TTable>().Add(model);
+                }
+                catch (Exception e)
+                {
+                    return Result.Fail(e.Message);
+                }
+
+                bool isCreated = db.SaveChanges() > 0;
+                if (isCreated)
+                    return Result.Success();
+                return Result.Fail("Đã có lỗi xảy ra");
+            }
+        }
+
+        public Result UpdateFrom<TTable>(TTable model) where TTable : class, new()
+        {
+            Type tableType = typeof(TTable);
+            using (var db = new EcomContext())
+            {
+                // first try to find element
+                int id = (int)tableType.GetProperty("Id").GetValue(model, null);
+
+                var entity = db.Set<TTable>().AsEnumerable()
+                    .FirstOrDefault(p => (int)(p as TTable).GetPropertyValue("Id") == id);
+
+                // try to update
+                try
+                {
+                    if (entity != null)
+                        entity.ObjectAssign(model);
+                }
+                catch (Exception e)
+                {
+                    return Result.Fail(e.Message);
+                }
+                
+                bool isCreated = db.SaveChanges() > 0;
+                if (isCreated)
+                    return Result.Success();
+                return Result.Fail("Đã có lỗi xảy ra");
+            }
+        }
+
     }
 }

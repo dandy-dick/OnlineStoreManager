@@ -27,28 +27,29 @@
       {
          type: 'html',
          html: function (item) {
-            return `
-                  <button class="_small_btn" style="${toolbarItemStyle}">
-                     <img class="small_icon" src="/icons/add.svg"/>
-                     Tạo mới
-                  </button>`;
+            return `<button class="_small_btn" style="${toolbarItemStyle}" `
+               + `      onclick="PRODUCT_PAGE.onAdd()">`
+               + `      <img class="small_icon" src="/icons/add.svg"/>`
+               + `       Tạo mới `
+               + `</button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: () => {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"
+                  onclick="PRODUCT_PAGE.onDelete()">
+                  <img class="small_icon" src="/icons/cancel.svg"/>
+                  Xóa
+               </button>`;
          },
       },
       {
          type: 'html',
          html: function (item) {
             return `
-                  <button class="_small_btn" style="${toolbarItemStyle}">
-                     <img class="small_icon" src="/icons/cancel.svg"/>
-                     Xóa
-                  </button>`;
-         },
-      },
-      {
-         type: 'html',
-         html: function (item) {
-            return `
-                  <button class="_small_btn" style="${toolbarItemStyle}">
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="PRODUCT_PAGE.onEdit()">
                      <img class="small_icon" src="/icons/pen.svg"/>
                      Chỉnh sửa
                   </button>`;

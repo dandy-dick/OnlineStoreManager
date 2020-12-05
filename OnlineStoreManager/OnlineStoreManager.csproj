@@ -13,4 +13,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\js\Views\Product\Index.js" />
+  </ItemGroup>
+
 </Project>
