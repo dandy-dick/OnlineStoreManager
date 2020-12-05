@@ -10,12 +10,36 @@ using OnlineStoreManager.Models;
 
 namespace OnlineStoreManager.Infracstructure
 {
+    public class ExcludeAttribute: Attribute
+    {
+        public string Name { get; set; }
+        public ExcludeAttribute(string Name)
+        {
+            this.Name = Name;
+        }
+    }
+
     public static class ObjectExtension
     {
         /*
             Giống với Object.assign của Javascript
          */
-        public static void ObjectAssign<TSource,TTarget>(this TTarget target, TSource src)
+        public static void TrySetProperty<TType>(string key, object val)
+        {
+
+        }
+
+        public static object GetPropertyValue<TSource>(this TSource src, string key)
+            where TSource : class, new()
+        {
+            var type = src.GetType();
+            bool hasProperty = type.GetProperty(key) != null;
+            if (hasProperty)
+                return type.GetProperty(key).GetValue(src, null);
+            return null;
+        }
+
+        public static void ObjectAssign<TSource, TTarget>(this TTarget target, TSource src) 
         {
             PropertyInfo[] properties = typeof(TTarget).GetProperties();
             foreach (PropertyInfo property in properties)
@@ -25,12 +49,72 @@ namespace OnlineStoreManager.Infracstructure
                 if (hasProperty)
                 {
                     var value = src.GetType()
-                                    .GetProperty(key)
-                                    .GetValue(src, null);
+                            .GetProperty(key)
+                            .GetValue(src, null);
+
                     property.SetValue(target, value);
                 }
             }
         }
+
+        public static void AssignProperties<TSource, TTarget>(this TTarget target, TSource src)
+            where TSource: class,new()
+            where TTarget: class,new()
+        {
+            PropertyInfo[] properties = typeof(TTarget).GetProperties();
+            foreach (PropertyInfo property in properties)
+            {
+                var key = property.Name;
+                bool hasProperty = src.GetType().GetProperty(key) != null;
+                if (hasProperty)
+                {
+                    // check for exclude
+                    var excluded = (string)src.GetPropertyAttributeValue
+                                                <TSource, ExcludeAttribute>(key, "Name");
+                    if (excluded == "AssignProperties")  // bo qua 
+                        continue;
+
+                    var value = src.GetType()
+                            .GetProperty(key)
+                            .GetValue(src, null);
+                    property.SetValue(target, value);
+                }
+            }
+        }
+
+/*
+    Lấy giá trị key từ attribute của một property của object
+    property hoặc attr không tồn tại thì throw
+ */
+public static object GetPropertyAttributeValue<TSrc,TAttr>(this TSrc src, string propertyName, string attrName)
+            where TAttr : class
+            where TSrc : class
+        {
+            var srcType = typeof(TSrc);
+            var attrType = typeof(TAttr);
+
+            var prop = srcType.GetProperty(propertyName);
+            if (prop != null)
+            {
+                var attr = prop.GetCustomAttribute(attrType);
+                if (attr != null)
+                {
+                    try
+                    {
+                        var result = attrType.GetProperty(attrName).GetValue(attr, null);
+                        return result;
+
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }
+            }
+            
+            return null;
+        }    
 
         /*
          Chuyển đổi tiếng việt thành không dấu
