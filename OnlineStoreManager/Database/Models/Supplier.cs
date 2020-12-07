@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using OnlineStoreManager.Infracstructure;
-using OnlineStoreManager.Models;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineStoreManager.Database.Models
 {
    
     public class Supplier
     {
+        [Display(Name = "Mã nhà cung cấp")]
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "Trường này không được để trống")]
+        [Display(Name = "Tên nhà cung cấp")]
         public string Name { get; set; }
-        public string Description { get; set; }
+
+        [Display(Name = "Mô tả thêm")]
+        public string Description { get; set; } = "";
 
         public virtual ICollection<Product> Products { get; set; }
     }

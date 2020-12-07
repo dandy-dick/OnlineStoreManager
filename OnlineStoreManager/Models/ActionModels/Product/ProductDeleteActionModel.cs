@@ -5,7 +5,7 @@ using OnlineStoreManager.Database.Models;
 using OnlineStoreManager.Infracstructure;
 using OnlineStoreManager.Repository;
 
-namespace OnlineStoreManager.Models.ViewModels.Products
+namespace OnlineStoreManager.Models.ViewModels
 {
     public class ProductDeleteActionModel : IControllerActionModel
     {

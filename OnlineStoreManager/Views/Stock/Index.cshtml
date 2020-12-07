@@ -1,0 +1,271 @@
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using System.ComponentModel.DataAnnotations;
+@model OnlineStoreManager.Models.ViewModels.StockIndexViewModel
+@inject IPageMaster PageMaster
+<!-- /* RENDER TABS */ -->
+<script hide>
+   $().w2tabs({
+      name: '_tabs',
+      active: '@ViewBag.TabName',
+      style: 'display:flex;align-items:center;',
+      tabs: [
+         { id: '@TabName.Product', text: '@PageMaster.GetTabName(TabName.Product)' },
+         { id: '@TabName.Stock', text: '@PageMaster.GetTabName(TabName.Stock)' },
+         { id: '@TabName.Supplier', text: '@PageMaster.GetTabName(TabName.Supplier)' },
+      ],
+      onClick: function (event) {
+         window.location.replace(`/?TabName=${event.target}`);
+      }
+   });
+</script>
+
+<!-- /*  RENDER GRID TOOLBAR */ -->
+<script hide>
+
+   var toolbarItemStyle = 'margin: 0 3.5px;';
+   var _toolbarItems = [
+      {
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}" `
+               + `      onclick="STOCK_PAGE.onAdd()">`
+               + `      <img class="small_icon" src="/icons/add.svg"/>`
+               + `       Tạo mới `
+               + `</button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: () => {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"
+                  onclick="STOCK_PAGE.onDelete()">
+                  <img class="small_icon" src="/icons/cancel.svg"/>
+                  Xóa
+               </button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="STOCK_PAGE.onEdit()">
+                     <img class="small_icon" src="/icons/pen.svg"/>
+                     Chỉnh sửa
+                  </button>`;
+         },
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn flex_center" style="${toolbarItemStyle}">
+                     <div class="flex_center">
+                         <img class="small_icon" src="/icons/filter.svg"/>
+                        <span style="margin-right: 7px;"> Lọc nâng cao </span>
+                        <span class="filter_counter"> 3 </span>
+                     </div>
+                  </button>
+               `;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <input class="toolbar_input" type="text"
+                     extend_query="SearchText" submit_on_keypress
+                     placeholder="Tìm kiếm ... "
+                     style="padding-right: 30px; width: 150px; ${toolbarItemStyle}"/>`;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button style="margin-left: -27px;">
+                      <img class="small_icon" src="/icons/search.svg"/>
+                  </button>`;
+         }
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="window.location.search='?TabName=@ViewBag.TabName'">
+                     <img class="small_icon" src="/icons/reload.svg"/>
+                     Tải lại </button>`;
+         }
+      },
+   ];
+
+   $().w2toolbar({
+      name: '_toolbar',
+      style: 'height:50px;padding-top:11px;',
+      items: _toolbarItems.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      })
+   });
+</script>
+
+<!-- /*  RENDER GRID */ -->
+<script hide>
+
+   @{
+       var s = new Stock();
+       string idTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("Id", "Name"),
+          nameTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("Name", "Name"),
+          quantityTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("Quantity", "Name"),
+          costTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("Cost", "Name"),
+          categoryTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("CategoryId", "Name"),
+          supplierTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("SupplierId", "Name"),
+          warehouseTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("WarehouseId", "Name"),
+          productTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("ProductId", "Name"),
+          descriptionTitle = (string)s.GetPropertyAttributeValue
+          <Stock, DisplayAttribute>("Description", "Name");
+   }
+
+   var _columns = [
+      { field: 'recid', caption: 'ID', size: '5%'},
+      { field: 'name', caption: 'ID', size: '11%'},
+      { field: 'quantity', caption: 'ID', size: '11%'},
+      { field: 'cost', caption: 'ID', size: '11%'},
+      { field: 'categoryname', caption: 'ID', size: '11%'},
+      { field: 'suppliername', caption: 'ID', size: '11%'},
+      { field: 'productid', caption: 'ID', size: '11%'},
+      { field: 'warehouse', caption: 'ID', size: '11%' },
+      { field: 'description', caption: 'ID', size: '11%' },
+   ];
+
+   @*
+      Id
+      Quantity
+      Name
+      Cost
+      CategoryName
+      SupplierName
+      ProductId
+      WarehouseId
+      Description
+   *@
+
+   var _records = [
+      @{ var recordFields = new string[9]; }
+      @foreach (var item in Model.Stocks)
+      {
+         recordFields[0] = "recid:" + $" '{ item.Id }' ";
+         recordFields[1] = "quantity:" + $" '{ item.Quantity }' ";
+         recordFields[2] = "name:" + $" '{ item.Name }' ";
+         recordFields[3] = "cost:" + $" '{ item.Cost }' ";
+         recordFields[6] = "warehouse:" + $" '{ item.Warehouse.Name }' ";
+         recordFields[8] = "description:" + $" '{ item.Description }' ";
+
+         @Html.Raw("{ " + String.Join(',', recordFields) + " }," );
+      }
+   ];
+
+   $().w2grid({
+      name: '_grid',
+      show: {
+         selectColumn: true,
+         lineNumbers: true,
+      },
+      multiSelect: true,
+      columns: _columns.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      }),
+      records: _records
+   });
+</script>
+
+<!-- /* RENDER GRID PAGINATION  */-->
+<script hide>
+   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
+   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
+   PAGINATION.init();
+
+   $().w2layout({
+      name: '_pagination',
+      panels: [
+         {
+            type: 'top', size: 35,
+            content: `
+               <div style="height:35px;">
+                  @Html.Partial("_W2uiPaginationPartial", new
+                   {
+                      CurrentPage = Model.CurrentPage,
+                      TotalItems = Model.TotalItems,
+                      PageSize = Model.PageSize
+                   })
+               </div>`,
+         },
+      ]
+   });
+</script>
+
+<!-- /* Đưa giao diện lên View  */-->
+<script hide>
+   $().w2layout({
+      name: '_stock_index',
+      panels: [
+         { type: 'top', size: 30, style: panelStyle },     // tabs,
+         { type: 'main' },    // product listview
+      ]
+   });
+
+   $().w2layout({
+      name: '_stock_index_top',
+      panels: [
+         { type: 'left', size: '100%' },     // tabs,
+         { type: 'right', size: '0%' },    // tab controls
+      ]
+   });
+
+   $().w2layout({
+      name: '_stock_index_main',
+      panels: [
+         { type: 'top', size: 50, style: panelStyle },     // toolbar,
+         { type: 'main' },     // grid
+         { type: 'bottom', size: 35, style: panelStyle }    // pagination
+      ]
+   });
+
+   w2ui['_stock_index_top'].content('left', w2ui['_tabs']);
+   w2ui['_stock_index_top'].content('right', w2ui['_tabs_controls']);
+
+   w2ui['_stock_index_main'].content('top', w2ui['_toolbar']);
+   w2ui['_stock_index_main'].content('main', w2ui['_grid']);
+   w2ui['_stock_index_main'].content('bottom', w2ui['_pagination']);
+
+   w2ui['_stock_index'].content('top', w2ui['_stock_index_top']);
+   w2ui['_stock_index'].content('main', w2ui['_stock_index_main']);
+
+   w2ui['_main_content'].content('main', w2ui['_stock_index']);
+</script>
+
+
+@section ViewScripts {
+   <script hide src="~/js/Views/Stock/Index.js"></script>
+}

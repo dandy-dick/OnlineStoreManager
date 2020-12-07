@@ -8,20 +8,24 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OnlineStoreManager.Infracstructure;
 using OnlineStoreManager.Models;
-using OnlineStoreManager.Models.ViewModels.Products;
+using OnlineStoreManager.Models.ViewModels;
 
 namespace OnlineStoreManager.Controllers
 {
     public class ProductController : AppController
     {
-        private IPageMaster PageMaster;
+        readonly IPageMaster PageMaster;
         public ProductController(IPageMaster _pageMaster)
         {
             this.PageMaster = _pageMaster;
 
         }
+
+        [Route("")]
+        [Route("/Product")]
         public IActionResult Index(ProductIndexActionModel model)
         {
+            model.TabName = TabName.Product;
             PageMaster.SetTabName(model.TabName);
 
             var viewModel = model.Execute();
@@ -30,7 +34,7 @@ namespace OnlineStoreManager.Controllers
         }
 
         [HttpPost]
-        public bool Delete(ProductDeleteActionModel model)
+        public Result Delete(ProductDeleteActionModel model)
         {
             return model.Execute();
         }
@@ -41,7 +45,6 @@ namespace OnlineStoreManager.Controllers
         [HttpPost]
         public IActionResult Modify(ProductModifyActionModel model)
         {
-
             return View(model.Execute());
         }
 

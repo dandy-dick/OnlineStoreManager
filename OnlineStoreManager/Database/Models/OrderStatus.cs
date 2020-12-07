@@ -11,6 +11,15 @@ using OnlineStoreManager.Models;
 
 namespace OnlineStoreManager.Database.Models
 {
+    public enum OrderStatusEnum
+    {
+        Paid = 1,
+        Exported = 2,
+        Completed = 3,
+        Canceled = 4,
+        Demurrage = 5   // trễ hạn giao hàng dự kiến
+    }
+
     public class OrderStatus
     {
         public int Id { get; set; }

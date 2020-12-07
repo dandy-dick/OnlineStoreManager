@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using OnlineStoreManager.Database.Models;
 using OnlineStoreManager.Infracstructure;
 
-namespace OnlineStoreManager.Models.ViewModels.Products
+namespace OnlineStoreManager.Models.ViewModels
 {
     public class ProductIndexViewModel
     {
@@ -13,7 +13,5 @@ namespace OnlineStoreManager.Models.ViewModels.Products
         public int TotalItems { get; set; }
 
         public IEnumerable<Product> Products { get; set; }
-        public IEnumerable<Category> Categories { get; set; }
-        public IEnumerable<Supplier> Suppliers { get; set; }
     }
 }

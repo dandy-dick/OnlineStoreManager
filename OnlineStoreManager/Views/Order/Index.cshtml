@@ -1,0 +1,416 @@
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using System.ComponentModel.DataAnnotations;
+@model OnlineStoreManager.Models.ViewModels.OrderIndexViewModel
+@inject IPageMaster PageMaster
+<!-- /* RENDER TABS */ -->
+<script hide>
+   $().w2tabs({
+      name: '_tabs',
+      active: '@ViewBag.TabName',
+      style: 'display:flex;align-items:center;',
+      tabs: [
+         {
+            id: '@TabName.PaidOrder',
+            text: '@PageMaster.GetTabName(TabName.PaidOrder)'
+         },
+         {
+            id: '@TabName.ExportedOrder',
+            text: '@PageMaster.GetTabName(TabName.ExportedOrder)'
+         },
+         {
+            id: '@TabName.CompletedOrder',
+            text: '@PageMaster.GetTabName(TabName.CompletedOrder)'
+         },
+         {
+            id: '@TabName.DemurrageOrder',
+            text: '@PageMaster.GetTabName(TabName.DemurrageOrder)'
+         },
+         {
+            id: '@TabName.CanceledOrder',
+            text: '@PageMaster.GetTabName(TabName.CanceledOrder)'
+         },
+      ],
+      onClick: function (event) {
+         window.location.replace(`/@TabName.Order?TabName=${event.target}`);
+      }
+   });
+</script>
+
+<!-- /*  RENDER GRID TOOLBAR */ -->
+<script hide>
+
+   var toolbarItemStyle = 'margin: 0 3.5px;';
+   var _toolbarItems1 = [
+      {
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"`
+               + `      style="${toolbarItemStyle}" `
+               + `      onclick="ORDER_PAGE.onAdd()">`
+               + `      <img class="small_icon" src="/icons/add.svg"/>`
+               + `       Tạo mới `
+               + `</button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: () => {
+            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"
+                  style="${toolbarItemStyle}"
+                  onclick="ORDER_PAGE.onDelete()">
+                  <img class="small_icon" src="/icons/cancel.svg"/>
+                  Xóa
+               </button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "" )"
+                     style="${toolbarItemStyle}"
+                     onclick="ORDER_PAGE.onEdit()">
+                     <img class="small_icon" src="/icons/pen.svg"/>
+                     Chỉnh sửa
+                  </button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"
+                     style="${toolbarItemStyle}"
+                     onclick="ORDER_PAGE.onEdit()">
+                     <img class="small_icon" src="/icons/new-window.svg"/>
+                     Xem chi tiết
+                  </button>`;
+         },
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: () => {
+            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"
+                  style="${toolbarItemStyle}"
+                  onclick="ORDER_PAGE.onDelete()">
+                  <img class="small_icon" src="/icons/excel.svg"/>
+                  Nhập file excel
+               </button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="ORDER_PAGE.onEdit()">
+                     <img class="small_icon" src="/icons/excel.svg"/>
+                     Xuất file excel
+                  </button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="ORDER_PAGE.onEdit()">
+                     <img class="small_icon" src="/icons/excel.svg"/>
+                     Xuất excel mẫu
+                  </button>`;
+         },
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         tabs: ['@TabName.PaidOrder'],
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"`
+               + `      onclick="ORDER_PAGE.onAdd()">`
+               + `       Đã xuất kho `
+               + `</button>`;
+         },
+      },
+      {
+         tabs: ['@TabName.ExportedOrder'],
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"`
+               + `      onclick="ORDER_PAGE.onAdd()">`
+               + `       Hoàn tất đơn hàng `
+               + `</button>`;
+         },
+      },
+      {
+         tabs: ['@TabName.PaidOrder','@TabName.ExportedOrder','@TabName.DemurrageOrder'],
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"`
+               + `      onclick="ORDER_PAGE.onAdd()">`
+               + `       Hủy đơn hàng `
+               + `</button>`;
+         },
+      },
+   ];
+   var _toolbarItems2 = [
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}">
+                     <img class="small_icon" src="/icons/calendar.svg"/>
+                     <span class="bold_span"> Từ: </span>
+                     <span> 23/4/2020 </span>
+                  </button>`;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}">
+                     <img class="small_icon" src="/icons/calendar.svg"/>
+                     <span class="bold_span"> Đến: </span>
+                     <span> 23/4/2020 </span>
+                  </button>`;
+         }
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn flex_center" style="${toolbarItemStyle}">
+                     <div class="flex_center">
+                         <img class="small_icon" src="/icons/filter.svg"/>
+                        <span style="margin-right: 7px;"> Lọc nâng cao </span>
+                        <span class="filter_counter"> 3 </span>
+                     </div>
+                  </button>
+               `;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <input class="toolbar_input" type="text"
+                     extend_query="SearchText" submit_on_keypress
+                     placeholder="Tìm kiếm ... "
+                     style="padding-right: 30px; width: 150px; ${toolbarItemStyle}"/>`;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button style="margin-left: -27px;">
+                      <img class="small_icon" src="/icons/search.svg"/>
+                  </button>`;
+         }
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="window.location.replace(@ViewBag.TabName)">
+                     <img class="small_icon" src="/icons/reload.svg"/>
+                     Tải lại </button>`;
+         }
+      },
+   ];
+
+   $().w2toolbar({
+      name: '_toolbar_top',
+      style: 'height:50px;padding-top:11px;',
+      items: _toolbarItems1.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      })
+   });
+   $().w2toolbar({
+      name: '_toolbar_bottom',
+      style: 'height:49px;padding-top:10px;margin-top:1px;margin-bottom:1px;',
+      items: _toolbarItems2.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      })
+   });
+
+</script>
+
+<!-- /*  RENDER GRID */ -->
+<script hide>
+   @{
+       var o = new Order();
+       string idTitle = (string)o.GetPropertyAttributeValue
+          <Order, DisplayAttribute>("Id", "Name"),
+            createdDateTitle = (string)o.GetPropertyAttributeValue
+          <Order, DisplayAttribute>("CreatedDate", "Name"),
+            desTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("Description", "Name"),
+            addressTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("DeliveryAddress", "Name"),
+            nameTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("ReceiverName", "Name"),
+            phoneTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("ReceiverPhoneNumber", "Name"),
+            cancelTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("CancelDescription", "Name"),
+            paidTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("PaymentDate", "Name"),
+             deliveryDateTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("ExpectedDeliveryDate", "Name"),
+            statusTitle = (string)o.GetPropertyAttributeValue
+               <Order, DisplayAttribute>("OrderStatusId", "Name");
+   }
+
+   var _columns = [
+      { field: 'recid', caption: '@idTitle', size: '5%' },
+      { field: 'CreatedDate', caption: '@createdDateTitle', size: '10%' },
+      { field: 'ReceiverName', caption: '@nameTitle', size: '10%' },
+      { field: 'DeliveryAddress', caption: '@addressTitle', size: '10%' },
+      { field: 'ReceiverPhoneNumber', caption: '@phoneTitle', size: '10%' },
+      { field: 'PaymentDate', caption: '@paidTitle', size: '10%' },
+      { field: 'ExpectedDeliveryDate', caption: '@deliveryDateTitle', size: '10%' },
+      { field: 'OrderStatus', caption: '@statusTitle', size: '10%' },
+      {
+         tabs: ['@TabName.CanceledOrder'],
+         field: 'CancelDescription', caption: '@cancelTitle', size: '10%',
+      },
+      { field: 'Description', caption: '@desTitle', size: '15%' },
+   ];
+
+   var _records = [
+      @{ var recordFields = new string[10]; }
+      @foreach (var item in Model.Orders)
+      {
+         recordFields[0] = "recid:" + $" '{ item.Id }' ";
+         recordFields[1] = "ReceiverName:" + $" '{ item.ReceiverName }' ";
+         recordFields[1] = "CreatedDate:" + $" '{ item.ReceiverName }' ";
+         recordFields[2] = "DeliveryAddress:" + $" '{ item.DeliveryAddress }' ";
+         recordFields[3] = "ReceiverPhoneNumber:" + $" '{ item.ReceiverPhoneNumber }' ";
+         recordFields[4] = "PaymentDate:" + $" '{ item.PaymentDate }' ";
+         recordFields[5] = "ExpectedDeliveryDate:" + $" '{ item.ExpectedDeliveryDate }' ";
+         recordFields[6] = "OrderStatus:" + $" '{ item.OrderStatus.Value }' ";
+         recordFields[7] = "CancelDescription:" + $" '{ item.CancelDescription }' ";
+         recordFields[8] = "Description:" + $" '{ item.Description }' ";
+
+         @Html.Raw("{ " + String.Join(',', recordFields) + " }," );
+      }
+   ];
+
+   $().w2grid({
+      name: '_grid',
+      show: {
+         selectColumn: true,
+         lineNumbers: true,
+      },
+      multiSelect: true,
+      columns: _columns.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      }),
+      records: _records
+   });
+</script>
+
+<!-- /* RENDER GRID PAGINATION  */-->
+<script hide>
+   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
+   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
+   PAGINATION.init();
+
+   $().w2layout({
+      name: '_pagination',
+      panels: [
+         {
+            type: 'top', size: 35,
+            content: `
+               <div style="height:35px;">
+                  @Html.Partial("_W2uiPaginationPartial", new
+                   {
+                      CurrentPage = Model.CurrentPage,
+                      TotalItems = Model.TotalItems,
+                      PageSize = Model.PageSize
+                   })
+               </div>`,
+         },
+      ]
+   });
+</script>
+
+<!-- /* Đưa giao diện lên View  */-->
+<script hide>
+   $().w2layout({
+      name: '_order_index',
+      panels: [
+         { type: 'top', size: 30, style: panelStyle },     // tabs,
+         { type: 'main' },    // product listview
+      ]
+   });
+
+   $().w2layout({
+      name: '_order_index_top',
+      panels: [
+         { type: 'left', size: '70%' },     // tabs,
+         { type: 'right', size: '30%' },    // tab controls
+      ]
+   });
+
+   $().w2layout({
+      name: '_toolbar',
+      panels: [
+         { type: 'top', size: '50', style: panelStyle },     // tabs,
+         { type: 'bottom', size: '50', style: panelStyle },    // tab controls
+      ]
+   });
+   w2ui['_toolbar'].content('top', w2ui['_toolbar_top']);
+   w2ui['_toolbar'].content('bottom', w2ui['_toolbar_bottom']);
+
+   $().w2layout({
+      name: '_order_index_main',
+      panels: [
+         { type: 'top', size: 100 },     // toolbar,
+         { type: 'main' },     // grid
+         { type: 'bottom', size: 35, style: panelStyle }    // pagination
+      ]
+   });
+
+   w2ui['_order_index_top'].content('left', w2ui['_tabs']);
+   w2ui['_order_index_top'].content('right', w2ui['_tab_toolbar']);
+
+   w2ui['_order_index_main'].content('top', w2ui['_toolbar']);
+
+   w2ui['_order_index_main'].content('main', w2ui['_grid']);
+   w2ui['_order_index_main'].content('bottom', w2ui['_pagination']);
+
+   w2ui['_order_index'].content('top', w2ui['_order_index_top']);
+   w2ui['_order_index'].content('main', w2ui['_order_index_main']);
+
+   w2ui['_main_content'].content('main', w2ui['_order_index']);
+</script>
+
+
+@section ViewScripts {
+   <script hide src="~/js/Views/Order/Index.js"></script>
+}

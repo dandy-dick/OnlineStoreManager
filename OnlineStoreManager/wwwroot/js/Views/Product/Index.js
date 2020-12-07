@@ -4,7 +4,7 @@ const PRODUCT_PAGE = {
         // request form content
         // vi validation phia server
         var productId = w2ui['_grid'].getSelection()[0];
-        if (!productId)
+        if (_action == 'Update' && !productId)
             return;
 
         var data = {
@@ -43,7 +43,6 @@ const PRODUCT_PAGE = {
                 onOpen: function (event) {
                     event.onComplete = function () {
                         var options = w2uiFormFromHtml(requestModifyForm, formName);
-                        debugger
                         // set form records
                         $(`#${formName}`).w2form(options);
                         $(`#w2ui-popup #${formName}`).w2render(formName);
@@ -153,16 +152,18 @@ const PRODUCT_PAGE = {
         })
     },
     delete: function () {
-        var ids = w2ui['_grid'].getSelection();
+        var deleteids = w2ui['_grid'].getSelection();
         var url = '/Product/Delete';
-        $.post(url, ids, () => {
+
+        $.post(url, { deleteids: deleteids } , () => {
             var recs = w2ui['_grid'].records;
             recs = recs.filter(value => {
-                return ids.find(id => id != value.id);
+                return deleteids.find(id => id != value.id);
             })
 
             w2ui['_grid'].record = recs;
             w2ui['_grid'].refresh();
+            w2popup.close();
         });
     },
     showModificationValidation: function (validation) {

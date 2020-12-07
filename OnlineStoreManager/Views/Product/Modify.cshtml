@@ -5,23 +5,23 @@
 @model OnlineStoreManager.Models.ViewModels.Products.ProductModifyViewModel
 @{ Layout = null; }
 @{
-   Product p = new Product();
-   string idLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Id", "Name"),
-      nameLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Name", "Name"),
-      costLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Cost", "Name"),
-      priceLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Price", "Name"),
-      descriptionLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Description", "Name"),
-      categoryLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("CategoryId", "Name"),
-      supplierLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("SupplierId", "Name");
+    Product p = new Product();
+    string idLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Id", "Name"),
+       nameLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Name", "Name"),
+       costLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Cost", "Name"),
+       priceLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Price", "Name"),
+       descriptionLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Description", "Name"),
+       categoryLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("CategoryId", "Name"),
+       supplierLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("SupplierId", "Name");
 
-   Product formValues = new Product();
-   string categoryId = null, supplierId = null;
-   if (Model.Action == CRUD.Update)
-   {
-      formValues.AssignProperties(Model.Product);
-      categoryId = formValues.Category.Id.ToString();
-      supplierId = formValues.Supplier.Id.ToString();
-   }
+    Product formValues = new Product();
+    string categoryId = null, supplierId = null;
+    if (Model.Action == CRUD.Update)
+    {
+       formValues.AssignProperties(Model.Product);
+       categoryId = formValues.Category.Id.ToString();
+       supplierId = formValues.Supplier.Id.ToString();
+    }
 }
 @*truyền options cho từng input để tạo w2ui form (render tại client)*@
 
@@ -51,13 +51,17 @@
 <div class="w2ui-field">
    <label>@categoryLabel</label>
    <div>
-      <input w2field="list" url="/Category/GetList"  value="@( categoryId ?? "" )" name="categoryid" />
+      <input w2field="list" url="/Category/GetList"  
+             value = "@(categoryId != null ? $"{{\"id\": {categoryId}, \"text\": \"{formValues.Category.Name}\" }}" : "null")"
+             name="categoryid" />
    </div>
 </div>
 <div class="w2ui-field">
    <label>@supplierLabel</label>
    <div> 
-      <input w2field="list" url="/Supplier/GetList" value="@( supplierId ?? "" )" name="supplierid" /> 
+      <input w2field="list" url="/Supplier/GetList" 
+             value = "@(supplierId != null ? $"{{\"id\": {supplierId}, \"text\": \"{formValues.Supplier.Name}\" }}" : "null")" 
+             name="supplierid" /> 
    </div>
 </div>
 <div class="w2ui-field">

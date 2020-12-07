@@ -44,7 +44,6 @@ namespace OnlineStoreManager.Database.Models
         public int? SupplierId { get; set; }
         public virtual Supplier Supplier { get; set; }
 
-        [Exclude("AssignProperties")]
-        public virtual ICollection<Stock> Stocks { get; set; } = null;
+        public int? StockId { get; set; }
     }
 }

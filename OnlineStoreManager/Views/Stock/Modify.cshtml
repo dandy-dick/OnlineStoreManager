@@ -1,0 +1,84 @@
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using System.ComponentModel.DataAnnotations;
+@using OnlineStoreManager.Repository;
+@model OnlineStoreManager.Models.ViewModels.StockModifyViewModel
+@{ Layout = null; }
+@{
+    var s = new Stock();
+    string idTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("Id", "Name"),
+       nameTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("Name", "Name"),
+       quantityTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("Quantity", "Name"),
+       costTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("Cost", "Name"),
+       categoryTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("CategoryId", "Name"),
+       supplierTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("SupplierId", "Name"),
+       warehouseTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("WarehouseId", "Name"),
+       productTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("ProductId", "Name"),
+       descriptionTitle = (string)s.GetPropertyAttributeValue
+       <Stock, DisplayAttribute>("Description", "Name");
+
+    Stock formValues = new Stock();
+    if (Model.Action == CRUD.Update)
+    {
+       formValues.AssignProperties(Model.Stock);
+    }
+}
+@*truyền options cho từng input để tạo w2ui form (render tại client)*@
+
+
+@*
+   Id
+   Quantity
+   Name
+   Cost
+   CategoryName
+   SupplierName
+   WarehouseId
+   ProductId
+   Description
+*@
+
+<div class="w2ui-field">
+   <label>@idTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="id" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@quantityTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="quantity" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@nameTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="name" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@costTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="cost" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@categoryTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="categoryid" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@supplierTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="supplierid" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@warehouseTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="warehouseid" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@productTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="productid" /> </div>
+</div>
+<div class="w2ui-field">
+   <label>@descriptionTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="description" /> </div>
+</div>

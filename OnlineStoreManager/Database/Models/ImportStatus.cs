@@ -11,6 +11,14 @@ using OnlineStoreManager.Models;
 
 namespace OnlineStoreManager.Database.Models
 {
+    public enum ImportStatusEnum
+    {
+        Waiting = 1, // đang 
+        Imported = 2,
+        Canceled = 3,
+        Demurrage = 4   // trễ hạn giao hàng dự kiến
+    }
+
     public class ImportStatus
     {
         public int Id { get; set; }

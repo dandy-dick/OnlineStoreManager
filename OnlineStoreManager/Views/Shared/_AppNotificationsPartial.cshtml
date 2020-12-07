@@ -6,6 +6,7 @@
       font-style: italic;
       color: orangered;
       text-overflow: ellipsis;overflow:hidden;white-space:nowrap;
+      height:100%;
    ">
          Warning!!: Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       </div>
@@ -22,7 +23,7 @@
    $().w2layout({
       name: '_app_notifications',
       panels: [
-         { type: 'top', content: appNotiContent, style: panelStyle },
+         { type: 'top', content: appNotiContent, style: panelStyle + 'margin-bottom:1px;' },
       ]
    });
 

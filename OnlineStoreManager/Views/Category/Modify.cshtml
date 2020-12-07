@@ -1,0 +1,41 @@
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using System.ComponentModel.DataAnnotations;
+@using OnlineStoreManager.Repository;
+@model OnlineStoreManager.Models.ViewModels.CategoryModifyViewModel
+@{ Layout = null; }
+@{
+   Category p = new Category();
+   string idLabel = (string)p.GetPropertyAttributeValue
+       <Category, DisplayAttribute>("Id", "Name"),
+      nameLabel = (string)p.GetPropertyAttributeValue
+         <Category, DisplayAttribute>("Name", "Name"),
+      descriptionLabel = (string)p.GetPropertyAttributeValue
+         <Category, DisplayAttribute>("Description", "Name");
+
+   Category formValues = new Category();
+   if (Model.Action == CRUD.Update)
+   {
+      formValues.AssignProperties(Model.Category);
+   }
+}
+@*truyền options cho từng input để tạo w2ui form (render tại client)*@
+
+<div class="w2ui-field">
+   <label>@idLabel</label>
+   <div> <input w2field="text" value="@formValues.Id" name="id" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@nameLabel</label>
+   <div> 
+      <input name="name" w2field="text" value="@formValues.Name" /> 
+   </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@descriptionLabel</label>
+   <div> 
+      <input w2field="textarea" value="@formValues.Description" name="description" /> 
+   </div>
+</div>
