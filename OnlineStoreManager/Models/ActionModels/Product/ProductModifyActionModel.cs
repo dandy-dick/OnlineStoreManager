@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using OnlineStoreManager.Database.Models;
 using OnlineStoreManager.Infracstructure;
+using OnlineStoreManager.Models.ViewModels.Products;
 using OnlineStoreManager.Repository;
 
-namespace OnlineStoreManager.Models.ViewModels.Products
+namespace OnlineStoreManager.Models.ViewModels
 {
     public class ProductModifyActionModel : IControllerActionModel
     {

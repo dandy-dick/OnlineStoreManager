@@ -22,20 +22,33 @@ namespace OnlineStoreManager.Infracstructure
     public enum TabName
     {
         // tong quan
-        Revenue = 1003,
-        Spending = 1004,
+        Revenue = 1,
+        Spending = 2,
+
         // quan ly don hang
-        Order = 1009,
+        Order = 8,
+        PaidOrder = 4,
+        ExportedOrder = 5,
+        CompletedOrder = 6,
+        CanceledOrder = 7,
+        DemurrageOrder = 3,
+        
+        // don hang nhap kho
+        ImportOrder = 9,
+        WaitingImportOrd = 10,
+        ImportedOrd = 11,
+        CanceledImportOrd = 12,
+        DemurrageImportOrd = 13,
+
         // quan ly ton kho
-        ImportOrder = 1005,
-        Stock = 1006,
-        Warehouse = 1007,
+        Stock = 14,
+        Warehouse = 15,
         // quan ly san pham
-        Product = 1000,
-        Category = 1001,
-        Supplier = 1002,
+        Product = 16,
+        Category = 17,
+        Supplier = 18,
         // 
-        Account= 1008
+        Account= 19
     }
 
     public interface IPageMaster 
@@ -68,8 +81,17 @@ namespace OnlineStoreManager.Infracstructure
                 case TabName.Spending:
                     return PageName.Summary;
                 case TabName.Order:
+                case TabName.PaidOrder:
+                case TabName.ExportedOrder:
+                case TabName.CompletedOrder:
+                case TabName.CanceledOrder:
+                case TabName.DemurrageOrder:
                     return PageName.Order;
                 case TabName.ImportOrder:
+                case TabName.WaitingImportOrd:
+                case TabName.ImportedOrd:
+                case TabName.CanceledImportOrd:
+                case TabName.DemurrageImportOrd:
                 case TabName.Stock:
                 case TabName.Warehouse:
                     return PageName.Inventory;
@@ -85,52 +107,47 @@ namespace OnlineStoreManager.Infracstructure
 
         public string GetTabName(TabName? tab = null)
         {
-            tab = tab ?? this.TabName;
-            switch (tab)
+            tab ??= this.TabName;
+            return tab switch
             {
-                case TabName.Revenue:
-                    return "Báo cáo doanh thu";
-                case TabName.Spending:
-                    return "Báo cáo chi tiêu";
-                case TabName.Order:
-                    return "Đơn hàng";
-                case TabName.ImportOrder:
-                    return "Đơn hàng nhập kho";
-                case TabName.Stock:
-                    return "Sản phẩm tồn kho";
-                case TabName.Warehouse:
-                    return "Kho hàng";
-                case TabName.Product:
-                    return "Sản phẩm";
-                case TabName.Category:
-                    return "Danh mục sản phẩm";
-                case TabName.Supplier:
-                    return "Nhà cung cấp";
-                case TabName.Account:
-                    return "Quản lý tài khoản";
-                default:
-                    return "";
-            }
+                TabName.Revenue => "Báo cáo doanh thu",
+                TabName.Spending => "Báo cáo chi tiêu",
+
+                TabName.Order => "Đơn hàng ecommerce",
+                TabName.PaidOrder => "Đã thanh toán",
+                TabName.ExportedOrder => "Đã xuất kho",
+                TabName.CompletedOrder => "Hoàn tất",
+                TabName.CanceledOrder => "Bị hủy",
+                TabName.DemurrageOrder => "Trễ hạn giao hàng",
+
+                TabName.ImportOrder => "Đơn hàng nhập kho",
+                TabName.WaitingImportOrd => "Đang xử lí",
+                TabName.ImportedOrd => "Đã nhập kho",
+                TabName.CanceledImportOrd => "Bị hủy",
+                TabName.DemurrageImportOrd => "Trễ hạn giao hàng",
+
+                TabName.Stock => "Sản phẩm tồn kho",
+                TabName.Warehouse => "Kho hàng",
+                TabName.Product => "Sản phẩm đang bán",
+                TabName.Category => "Danh mục sản phẩm",
+                TabName.Supplier => "Nhà cung cấp",
+                TabName.Account => "Quản lý tài khoản",
+                _ => "",
+            };
         }
 
         public string GetPageName(PageName? page = null)
         {
-            page = page ?? this.PageName;
-            switch (page)
+            page ??= this.PageName;
+            return page switch
             {
-                case PageName.Summary:
-                    return "Tổng quan";
-                case PageName.Order:
-                    return "Quản lý đơn hàng";
-                case PageName.Inventory:
-                    return "Quản lý kho";
-                case PageName.Product:
-                    return "Quản lý sản phẩm";
-                case PageName.Admin:
-                    return "Admin";
-                default:
-                    return "";
-            }
+                PageName.Summary => "Tổng quan",
+                PageName.Order => "Quản lý đơn hàng",
+                PageName.Inventory => "Quản lý kho",
+                PageName.Product => "Quản lý sản phẩm",
+                PageName.Admin => "Admin",
+                _ => "",
+            };
         }
     }
 }

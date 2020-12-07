@@ -9,17 +9,17 @@ namespace OnlineStoreManager.Models.ViewModels
 {
     public class CategoryGetListActionModel : IControllerActionModel
     {
-        public int max { get; set; }
-        public string search { get; set; }
+        public int Max { get; set; }
+        public string Search { get; set; }
 
         public dynamic Execute()
         {
             var repo = new AppRepository();
             var categories = repo.Categories();
-            return categories.Where(p => (search == null) ? true : p.Name.ToLower().TiengVietKhongDau()
-                                    .Contains(search.ToLower().TiengVietKhongDau()))
+            return categories.Where(p => (Search == null) || p.Name.ToLower().TiengVietKhongDau()
+                                    .Contains(Search.ToLower().TiengVietKhongDau()))
                 .Select(p => new { id = p.Id, text = p.Name })
-                .Take(max);
+                .Take(Max);
         }
     }
 }

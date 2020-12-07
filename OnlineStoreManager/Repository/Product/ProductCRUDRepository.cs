@@ -21,16 +21,12 @@ namespace OnlineStoreManager.Repository
 
         public dynamic Execute()
         {
-            switch (Action)
+            return Action switch
             {
-                case CRUD.Insert:
-                    return InsertProduct();
-                case CRUD.Delete:
-                    return DeleteProducts();
-                case CRUD.Update:
-                default:
-                    return UpdateProduct();
-            }
+                CRUD.Insert => InsertProduct(),
+                CRUD.Delete => DeleteProducts(),
+                _ => UpdateProduct(),
+            };
         }
 
         public Result InsertProduct()

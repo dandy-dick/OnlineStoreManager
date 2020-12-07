@@ -161,10 +161,14 @@ function w2uiFormFromHtml(htmlData, formName) {
                 break;
             }
             case 'list': {
+                var _val = $(el).attr('value');
+                var _selected = JSON.parse(_val);
+
                 _fields.push({
                     name: $(el).attr('name'), type: type,
                     options: {
-                        url: $(el).attr('url'), minLength:0, // must set 0
+                        url: $(el).attr('url'), minLength: 0,
+                        selected: _selected,
                     },
                 });
                 _record[$(el).attr('name')] = $(el).attr('value');

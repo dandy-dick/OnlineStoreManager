@@ -53,7 +53,7 @@ namespace OnlineStoreManager
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Product}/{action=Index}");
+                    pattern: "{controller}/{action}");
             });
         }
     }

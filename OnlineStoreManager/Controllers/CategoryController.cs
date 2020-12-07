@@ -1,36 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OnlineStoreManager.Infracstructure;
-using OnlineStoreManager.Models;
 using OnlineStoreManager.Models.ViewModels;
-using OnlineStoreManager.Models.ViewModels.Products;
 
 namespace OnlineStoreManager.Controllers
 {
-    public class GetListRequest 
-    {
-        public string search { get; set; }
-        public int max { get; set; }
-    }
-    
     public class CategoryController: AppController
     {
-        private IPageMaster PageMaster;
+        readonly IPageMaster PageMaster;
         public CategoryController(IPageMaster _pageMaster)
         {
             this.PageMaster = _pageMaster;
 
         }
 
+        [Route("/Category")]
+        public IActionResult Index(CategoryIndexActionModel model)
+        {
+            model.TabName = TabName.Category;
+            PageMaster.SetTabName(model.TabName);
+
+            var viewModel = model.Execute();
+            ViewBag.TabName = model.TabName;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public Result Delete(CategoryDeleteActionModel model)
+        {
+            return model.Execute();
+        }
+
+
+        //  for validations 
+        //
+        [HttpPost]
+        public IActionResult Modify(CategoryModifyActionModel model)
+        {
+            return View(model.Execute());
+        }
+
+        [HttpPost]
+        public dynamic Add(CategoryAddActionModel model)
+        {
+            if (ModelState.IsValid)
+                return model.Execute();
+
+            var modelError = GetModelStateDictionary<CategoryAddActionModel>();
+            return Result.Fail(null, modelError);
+        }
+
+        [HttpPost]
+        public dynamic Update(CategoryUpdateActionModel model)
+        {
+            if (ModelState.IsValid)
+                return model.Execute();
+
+            var modelError = GetModelStateDictionary<CategoryAddActionModel>();
+            return Result.Fail(null, modelError);
+        }
+
         public dynamic GetList(string request)
         {
-            var obj = JsonConvert.DeserializeObject<GetListRequest>(request);
+            var obj = JsonConvert.DeserializeObject<GetListRequestModel>(request);
             var model = new CategoryGetListActionModel();
             model.ObjectAssign(obj);
             

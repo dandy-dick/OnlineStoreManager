@@ -1,0 +1,262 @@
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using System.ComponentModel.DataAnnotations;
+@model OnlineStoreManager.Models.ViewModels.ImportOrderIndexViewModel
+@inject IPageMaster PageMaster
+<!-- /* RENDER TABS */ -->
+<script hide>
+   $().w2tabs({
+      name: '_tabs',
+      active: '@ViewBag.TabName',
+      style: 'display:flex;align-items:center;',
+      tabs: [
+         { id: '@TabName.ImportOrder', text: '@PageMaster.GetTabName(TabName.ImportOrder)' },
+         { id: '@TabName.ImportOrder', text: '@PageMaster.GetTabName(TabName.ImportOrder)' },
+      ],
+      onClick: function (event) {
+         window.location.replace(`/?TabName=${event.target}`);
+      }
+   });
+</script>
+
+<!-- /*  RENDER GRID TOOLBAR */ -->
+<script hide>
+
+   var toolbarItemStyle = 'margin: 0 3.5px;';
+   var _toolbarItems = [
+      {
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}" `
+               + `      onclick="IMPORT_ORDER_PAGE.onAdd()">`
+               + `      <img class="small_icon" src="/icons/add.svg"/>`
+               + `       Tạo mới `
+               + `</button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: () => {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"
+                  onclick="IMPORT_ORDER_PAGE.onDelete()">
+                  <img class="small_icon" src="/icons/cancel.svg"/>
+                  Xóa
+               </button>`;
+         },
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="IMPORT_ORDER_PAGE.onEdit()">
+                     <img class="small_icon" src="/icons/pen.svg"/>
+                     Chỉnh sửa
+                  </button>`;
+         },
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn flex_center" style="${toolbarItemStyle}">
+                     <div class="flex_center">
+                         <img class="small_icon" src="/icons/filter.svg"/>
+                        <span style="margin-right: 7px;"> Lọc nâng cao </span>
+                        <span class="filter_counter"> 3 </span>
+                     </div>
+                  </button>
+               `;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <input class="toolbar_input" type="text"
+                     extend_query="SearchText" submit_on_keypress
+                     placeholder="Tìm kiếm ... "
+                     style="padding-right: 30px; width: 150px; ${toolbarItemStyle}"/>`;
+         }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button style="margin-left: -27px;">
+                      <img class="small_icon" src="/icons/search.svg"/>
+                  </button>`;
+         }
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}"
+                     onclick="window.location.replace(@ViewBag.TabName)">
+                     <img class="small_icon" src="/icons/reload.svg"/>
+                     Tải lại </button>`;
+         }
+      },
+   ];
+
+   $().w2toolbar({
+      name: '_toolbar',
+      style: 'height:50px;padding-top:11px;',
+      items: _toolbarItems.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      })
+   });
+</script>
+
+<!-- /*  RENDER GRID */ -->
+<script hide>
+   @{
+       var o = new ImportOrder();
+       string idTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("Id", "Name"),
+          discountTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("Discount", "Name"),
+          deliveryDateTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("ExpectedDeliveryDate", "Name"),
+          warehouseTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("WarehouseId", "Name"),
+          statusTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("ImportStatusId", "Name"),
+          cancelTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("CancelDescription", "Name"),
+          descriptionTitle = (string)o.GetPropertyAttributeValue
+          <ImportOrder, DisplayAttribute>("Description", "Name");
+   }
+
+   @*
+      Id
+      Discount
+      ExpectedDeliveryDate
+      WarehouseId
+      ImportStatusId
+      CancelDescription
+      Description
+   *@
+   var _columns = [
+      { field: 'recid', caption: '@idTitle', size: '5%' },
+      { field: 'discount', caption: '@discountTitle', size: '14%' },
+      { field: 'expecteddeliverydate', caption: '@deliveryDateTitle', size: '14%' },
+      { field: 'warehouse', caption: '@warehouseTitle', size: '14%' },
+      { field: 'importstatus', caption: '@statusTitle', size: '14%' },
+      { field: 'canceldescription', caption: '@cancelTitle', size: '14%' },
+      { field: 'description', caption: '@descriptionTitle', size: '14%' },
+
+   ];
+
+   var _records = [
+      @{ var recordFields = new string[9]; }
+      @foreach (var item in Model.ImportOrders)
+      {
+         recordFields[0] = "recid:" + $" '{ item.Id }' ";
+         recordFields[1] = "discount:" + $" '{ item.Discount }' ";
+         recordFields[2] = "expecteddeliverydate:" + $" '{ item.ExpectedDeliveryDate }' ";
+         recordFields[3] = "warehouse:" + $" '{ item.Warehouse.Name }' ";
+         recordFields[4] = "importstatus:" + $" '{ item.ImportStatus.Value }' ";
+         recordFields[5] = "canceldescription:" + $" '{ item.CancelDescription }' ";
+         recordFields[6] = "description:" + $" '{ item.Description }' ";
+
+         @Html.Raw("{ " + String.Join(',', recordFields) + " }," );
+      }
+   ];
+
+   $().w2grid({
+      name: '_grid',
+      show: {
+         selectColumn: true,
+         lineNumbers: true,
+      },
+      multiSelect: true,
+      columns: _columns.filter(p => {
+         if (p.tabs)
+            return p.tabs.find(p => p == '@ViewBag.TabName')
+         return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
+      }),
+      records: _records
+   });
+</script>
+
+<!-- /* RENDER GRID PAGINATION  */-->
+<script hide>
+   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
+   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
+   PAGINATION.init();
+
+   $().w2layout({
+      name: '_pagination',
+      panels: [
+         {
+            type: 'top', size: 35,
+            content: `
+               <div style="height:35px;">
+                  @Html.Partial("_W2uiPaginationPartial", new
+                   {
+                      CurrentPage = Model.CurrentPage,
+                      TotalItems = Model.TotalItems,
+                      PageSize = Model.PageSize
+                   })
+               </div>`,
+         },
+      ]
+   });
+</script>
+
+<!-- /* Đưa giao diện lên View  */-->
+<script hide>
+   $().w2layout({
+      name: '_import_order_index',
+      panels: [
+         { type: 'top', size: 30, style: panelStyle },     // tabs,
+         { type: 'main' },    // product listview
+      ]
+   });
+
+   $().w2layout({
+      name: '_import_order_index_top',
+      panels: [
+         { type: 'left', size: '100%' },     // tabs,
+         { type: 'right', size: '0%' },    // tab controls
+      ]
+   });
+
+   $().w2layout({
+      name: '_import_order_index_main',
+      panels: [
+         { type: 'top', size: 50, style: panelStyle },     // toolbar,
+         { type: 'main' },     // grid
+         { type: 'bottom', size: 35, style: panelStyle }    // pagination
+      ]
+   });
+
+   w2ui['_import_order_index_top'].content('left', w2ui['_tabs']);
+   w2ui['_import_order_index_top'].content('right', w2ui['_tabs_controls']);
+
+   w2ui['_import_order_index_main'].content('top', w2ui['_toolbar']);
+   w2ui['_import_order_index_main'].content('main', w2ui['_grid']);
+   w2ui['_import_order_index_main'].content('bottom', w2ui['_pagination']);
+
+   w2ui['_import_order_index'].content('top', w2ui['_import_order_index_top']);
+   w2ui['_import_order_index'].content('main', w2ui['_import_order_index_main']);
+
+   w2ui['_main_content'].content('main', w2ui['_import_order_index']);
+</script>
+
+
+@section ViewScripts {
+   <script hide src="~/js/Views/ImportOrder/Index.js"></script>
+}

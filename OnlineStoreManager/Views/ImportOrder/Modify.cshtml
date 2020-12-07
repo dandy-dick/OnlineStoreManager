@@ -1,0 +1,76 @@
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using System.ComponentModel.DataAnnotations;
+@using OnlineStoreManager.Repository;
+@model OnlineStoreManager.Models.ViewModels.ImportOrderModifyViewModel
+@{ Layout = null; }
+
+@{
+   var o = new ImportOrder();
+   string idTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("Id", "Name"),
+      discountTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("Discount", "Name"),
+      deliveryDateTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("ExpectedDeliveryDate", "Name"),
+      warehouseTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("WarehouseId", "Name"),
+      statusTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("ImportStatusId", "Name"),
+      cancelTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("CancelDescription", "Name"),
+      descriptionTitle = (string)o.GetPropertyAttributeValue
+      <ImportOrder, DisplayAttribute>("Description", "Name");
+
+   ImportOrder formValues = new ImportOrder();
+   if (Model.Action == CRUD.Update)
+   {
+      formValues.AssignProperties(Model.ImportOrder);
+   }
+}
+@*truyền options cho từng input để tạo w2ui form (render tại client)*@
+
+@*
+   Id
+   Discount
+   ExpectedDeliveryDate
+   WarehouseId
+   ImportStatusId
+   CancelDescription
+   Description
+*@
+
+<div class="w2ui-field">
+   <label>@idTitle</label>
+   <div> <input w2field="text" value="@formValues.Id" name="id" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@discountTitle</label>
+   <div> <input w2field="int" value="@formValues.Discount" name="discount" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@deliveryDateTitle</label>
+   <div> <input w2field="date" value="@formValues.ExpectedDeliveryDate" name="expecteddeliverydate" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@warehouseTitle</label>
+   <div> <input w2field="list" value="@formValues.WarehouseId" name="warehouseid" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@statusTitle</label>
+   <div> <input w2field="list" value="@formValues.ImportStatusId" name="importstatusid" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@cancelTitle</label>
+   <div> <input w2field="text" value="@formValues.CancelDescription" name="canceldescription" /> </div>
+</div>
+
+<div class="w2ui-field">
+   <label>@descriptionTitle</label>
+   <div> <input w2field="text" value="@formValues.CancelDescription" name="description" /> </div>
+</div>
