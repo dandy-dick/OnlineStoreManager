@@ -5,7 +5,10 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <title> OnlineStoreManager</title>
 
-   <link href="~/css/site.css" rel="stylesheet" />
+   <link href="~/css/site.css" rel="stylesheet" asp-append-version="true"/>
+   <link href="~/css/flex-style.css" rel="stylesheet" asp-append-version="true"/>
+   <link href="~/css/form-style.css" rel="stylesheet" asp-append-version="true"/>
+
    <link href="~/lib/w2ui/w2ui-1.5.rc1.min.css" rel="stylesheet" asp-append-version="true"/>
 
    @RenderSection("StyleSheets", required: false)
@@ -21,9 +24,9 @@
    <script>
 
       var panelStyle = `
-               border: 1px solid #c5c5c5;
-               background-image: linear-gradient(#f9f9f9,#e4e4e4);
-            `;
+                  border: 1px solid #c5c5c5;
+                  background-image: linear-gradient(#f9f9f9,#e4e4e4);
+               `;
 
    </script>
 
@@ -48,7 +51,6 @@
       $().w2layout({
          name: '_main_content',
          panels: [
-            { type: 'top', size: 44 },  // for app notifications
             { type: 'main' },    // for w2grid
          ]
       });
@@ -56,20 +58,17 @@
 
    </script>
 
-   @Html.Partial("_AppNavigationsPartial")
-   @Html.Partial("_AppHeaderPartial")
-   @Html.Partial("_AppNotificationsPartial")
+   @await Html.PartialAsync("_AppNavigationsPartial")
+   @await Html.PartialAsync("_AppHeaderPartial")
 
    @RenderBody()
 
    @RenderSection("ViewScripts", required: false)
 
    <script hide>
-      // load dữ liệu cho grid lần đầu
       window.onunload = setTimeout(() => {
-         w2ui['_grid'].refresh();
          hideScripts();
-         window.extendQuery = extendQuery();
+         extendQuery();
       }, 500);
    </script>
 </body>

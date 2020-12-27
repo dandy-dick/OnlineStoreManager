@@ -6,11 +6,11 @@
 @{ Layout = null; }
 @{
     Supplier p = new Supplier();
-    string idLabel = (string)p.GetPropertyAttributeValue
+    string idLabel = (string)p.PropAttrValue
         <Supplier, DisplayAttribute>("Id", "Name"),
-       nameLabel = (string)p.GetPropertyAttributeValue
+       nameLabel = (string)p.PropAttrValue
           <Supplier, DisplayAttribute>("Name", "Name"),
-       descriptionLabel = (string)p.GetPropertyAttributeValue
+       descriptionLabel = (string)p.PropAttrValue
           <Supplier, DisplayAttribute>("Description", "Name");
 
     Supplier formValues = new Supplier();

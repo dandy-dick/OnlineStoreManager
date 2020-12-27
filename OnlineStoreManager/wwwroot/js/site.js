@@ -70,8 +70,6 @@ function extendQuery() {
         }
     };
     obj.init();
-
-    return obj;
 }
 
 function _w2uiPagination(currentPage = 1, totalItems = 0, pageSize = 20) {
@@ -105,6 +103,7 @@ function _w2uiPagination(currentPage = 1, totalItems = 0, pageSize = 20) {
                 `;
                 }
                 $('#_pagination_container').html(str);
+                extendQuery();
             }
         },
         loadPrevPages: function () {

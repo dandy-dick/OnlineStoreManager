@@ -18,7 +18,6 @@ namespace OnlineStoreManager.Controllers
         public ProductController(IPageMaster _pageMaster)
         {
             this.PageMaster = _pageMaster;
-
         }
 
         [Route("")]
@@ -33,19 +32,16 @@ namespace OnlineStoreManager.Controllers
             return View(viewModel);
         }
 
+        public IActionResult Modify(ProductModifyActionModel model)
+        {
+            ViewBag.ModelStateDictionary = this.ModelStateDictionary<ProductModifyActionModel>();
+            return View(model.Execute());
+        }
+
         [HttpPost]
         public Result Delete(ProductDeleteActionModel model)
         {
             return model.Execute();
-        }
-
-
-        //  for validations 
-        //
-        [HttpPost]
-        public IActionResult Modify(ProductModifyActionModel model)
-        {
-            return View(model.Execute());
         }
 
         [HttpPost]
@@ -54,7 +50,7 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                return model.Execute();
 
-            var modelError = GetModelStateDictionary<ProductAddActionModel>();
+            var modelError = ModelStateDictionary<ProductAddActionModel>();
             return Result.Fail(null, modelError);
         }
 
@@ -64,7 +60,7 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<ProductAddActionModel>();
+            var modelError = ModelStateDictionary<ProductAddActionModel>();
             return Result.Fail(null, modelError);
         }
     }

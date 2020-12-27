@@ -22,7 +22,7 @@ namespace OnlineStoreManager.Database.Models
 
     public class OrderStatus
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
     }

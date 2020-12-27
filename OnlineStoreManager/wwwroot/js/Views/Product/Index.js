@@ -1,16 +1,16 @@
 ﻿
 const PRODUCT_PAGE = {
     setModificationContent(_action) {
-        // request form content
-        // vi validation phia server
         var productId = w2ui['_grid'].getSelection()[0];
-        if (_action == 'Update' && !productId)
+        if (_action == 'Update' && !productId) {
+            alert('Bạn chưa chọn dòng nào cả');
             return;
+        }
 
         var data = {
             action: _action,       // hardcode enum Repository.CRUD
             product: {
-                id: _action == 'Update' ? productId : null,// get product ID if action is update
+                id: productId
             }
         };
 
@@ -31,14 +31,15 @@ const PRODUCT_PAGE = {
 
             // render popup
             var formName = 'modify_form';
-            var popupContentStyle = `display:flex;flex-direction:column;padding: 1rem;`;
+            var popupContentStyle = `padding: 1rem;width:100%;height:100%;`;
             w2popup.open({
                 title: `Sản phẩm - ${title}`,
                 modal: true,
                 showClose: true,
-                width: 350,
-                height: 400,
-                body: `<div id="${formName}" style="${popupContentStyle}"> ${requestModifyForm} </div>`,
+                width: 500,
+                height: 600,
+                body: `<div id="${formName}" style="${popupContentStyle}"> 
+                            ${requestModifyForm} </div>`,
                 buttons: $(buttons).wrap('<div></div>').parent().html(),
                 onOpen: function (event) {
                     event.onComplete = function () {
@@ -47,7 +48,7 @@ const PRODUCT_PAGE = {
                         $(`#${formName}`).w2form(options);
                         $(`#w2ui-popup #${formName}`).w2render(formName);
                     }
-                }
+                },
             });
             // assign event, because element was not yet added to DOM
             $('#popup_confirm').click(e => {

@@ -13,7 +13,7 @@
          { id: '@TabName.Supplier', text: '@PageMaster.GetTabName(TabName.Supplier)' },
       ],
       onClick: function (event) {
-         window.location.replace(`/?TabName=${event.target}`);
+         window.location.replace(`/${event.target}`);
       }
    });
 </script>
@@ -57,20 +57,6 @@
       {
          type: 'break',
          style: 'margin: 0 21px;',
-      },
-      {
-         type: 'html',
-         html: function (item) {
-            return `
-                  <button class="_small_btn flex_center" style="${toolbarItemStyle}">
-                     <div class="flex_center">
-                         <img class="small_icon" src="/icons/filter.svg"/>
-                        <span style="margin-right: 7px;"> Lọc nâng cao </span>
-                        <span class="filter_counter"> 3 </span>
-                     </div>
-                  </button>
-               `;
-         }
       },
       {
          type: 'html',
@@ -123,17 +109,17 @@
 
    var _columns = [
       // Product Tab Grid Columns
-      { field: 'recid', caption: 'ID', size: '5%'},
+      { field: 'id', caption: 'ID', size: '5%'},
       // Category Tab Grid Columns
-      { field: 'name', caption: 'Tên danh mục', size: '30%', tabs: ["@TabName.Category"]},
-      { field: 'description', caption: 'Mô tả', size: '65%', tabs: ["@TabName.Category"]},
+      { field: 'name', caption: 'Tên danh mục', size: '30%'},
+      { field: 'description', caption: 'Mô tả', size: '65%'},
    ];
 
    var _records = [
       @foreach (var item in Model.Categories)
       {
          var recordFields = new string[3];
-         recordFields[0] = "recid:" + $" '{ item.Id }' ";
+         recordFields[0] = "id:" + $" '{ item.Id }' ";
          recordFields[1] = "name:" + $" '{ item.Name }' ";
          recordFields[2] = "description:" + $" '{ item.Description }' ";
 
@@ -143,6 +129,7 @@
 
    $().w2grid({
       name: '_grid',
+      recid: 'id',
       show: {
          selectColumn: true,
          lineNumbers: true,
@@ -153,7 +140,12 @@
             return p.tabs.find(p => p == '@ViewBag.TabName')
          return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
       }),
-      records: _records
+      records: _records,
+      onRender: function (e) {
+         e.onComplete = function () {
+            this.refresh();
+         }
+      }
    });
 </script>
 
@@ -170,7 +162,7 @@
             type: 'top', size: 35,
             content: `
                <div style="height:35px;">
-                  @Html.Partial("_W2uiPaginationPartial", new
+                  @await Html.PartialAsync("_W2uiPaginationPartial", new
                    {
                       CurrentPage = Model.CurrentPage,
                       TotalItems = Model.TotalItems,

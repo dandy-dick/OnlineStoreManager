@@ -69,7 +69,7 @@ namespace OnlineStoreManager.Infracstructure
                 if (hasProperty)
                 {
                     // check for exclude
-                    var excluded = (string)src.GetPropertyAttributeValue
+                    var excluded = (string)src.PropAttrValue
                                                 <TSource, ExcludeAttribute>(key, "Name");
                     if (excluded == "AssignProperties")  // bo qua 
                         continue;
@@ -86,7 +86,7 @@ namespace OnlineStoreManager.Infracstructure
     Lấy giá trị key từ attribute của một property của object
     property hoặc attr không tồn tại thì throw
  */
-public static object GetPropertyAttributeValue<TSrc,TAttr>(this TSrc src, string propertyName, string attrName)
+public static object PropAttrValue<TSrc,TAttr>(this TSrc src, string propertyName, string attrName)
             where TAttr : class
             where TSrc : class
         {

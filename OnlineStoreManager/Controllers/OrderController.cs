@@ -45,7 +45,7 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<OrderAddActionModel>();
+            var modelError = ModelStateDictionary<OrderAddActionModel>();
             return Result.Fail(null, modelError);
         }
 
@@ -55,7 +55,7 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<OrderAddActionModel>();
+            var modelError = ModelStateDictionary<OrderAddActionModel>();
             return Result.Fail(null, modelError);
         }
     }

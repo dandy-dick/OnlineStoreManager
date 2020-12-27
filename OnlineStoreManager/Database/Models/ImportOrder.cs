@@ -15,37 +15,27 @@ namespace OnlineStoreManager.Database.Models
     public class ImportOrder
     {
         [Display(Name = "Mã đơn hàng")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
         
         [Display(Name = "Ngày tạo")]
-        public DateTime CreatedDate { get; set; }
+        public string CreatedDate { get; set; }
+
+        [Display(Name = "Ngày hoàn thành")]
+        public string CompletedDate { get; set; }
 
         [Display(Name = "Ngày giao dự kiến")]
         [Required(ErrorMessage = "Trường này không được để trống")]
-        public DateTime ExpectedDeliveryDate { get; set; }
-
-        [Display(Name = "Chiết khấu")]
-        public double Discount { get; set; }
+        public string ExpectedDeliveryDate { get; set; }
 
         [Display(Name = "Mô tả đơn hàng")]
         public string Description { get; set; } = "";
 
-        [Display(Name = "Lí do hủy đơn")]
-        public string CancelDescription { get; set; } = "";
-
         [ForeignKey("ImportStatusId")]
         [Display(Name = "Trạng thái")]
-        [Required(ErrorMessage = "Trường này không được để trống")]
-        public int ImportStatusId { get; set; }
+        public int? ImportStatusId { get; set; }
         public virtual ImportStatus ImportStatus { get; set; }
 
-        [ForeignKey("WarehouseId")]
-        [Display(Name = "Thuộc kho hàng")]
-        [Required(ErrorMessage = "Trường này không được để trống")]
-        public int WarehouseId { get; set; }
-        public virtual Warehouse Warehouse { get; set; }
-
         [Exclude("AssignProperties")]
-        public virtual ICollection<ImportItem> ImportProducts { get; set; }
+        public virtual ICollection<ImportItem> ImportItems { get; set; }
     }
 }

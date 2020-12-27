@@ -36,11 +36,6 @@
                   selected: @(ViewBag.TabName == TabName.Revenue ? "true" : "false"),
                   onClick: () => window.location = '/@TabName.Revenue',
                },
-               {
-                  id: 'level-0-2', text: '@PageMaster.GetTabName(TabName.Spending)',
-                  selected: @(ViewBag.TabName == TabName.Spending ? "true" : "false"),
-                  onClick: () => window.location = '/@TabName.Spending',
-               },
             ]
          },
          {
@@ -56,21 +51,6 @@
                   selected: @(ViewBag.TabName == TabName.ImportOrder ? "true" : "false"),
                   onClick: () => window.location = '/@TabName.ImportOrder?TabName=@TabName.WaitingImportOrd',
                },
-            ]
-         },
-         {
-            id: 'level-2', text: '@PageMaster.GetPageName(PageName.Inventory)',  expanded: true, group: true,
-            nodes: [
-               {
-                  id: 'level-2-1', text: '@PageMaster.GetTabName(TabName.Stock)',
-                  selected: @(ViewBag.TabName == TabName.Stock ? "true" : "false"),
-                  onClick: () => window.location = '/@TabName.Stock',
-               },
-               {
-                  id: 'level-2-2', text: '@PageMaster.GetTabName(TabName.Warehouse)',
-                  selected: @(ViewBag.TabName == TabName.Warehouse ? "true" : "false"),
-                  onClick: () => window.location = '/@TabName.Warehouse',
-               }
             ]
          },
          {

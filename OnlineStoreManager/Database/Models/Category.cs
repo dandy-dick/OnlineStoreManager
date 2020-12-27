@@ -7,7 +7,7 @@ namespace OnlineStoreManager.Database.Models
     public class Category
     {
         [Display(Name="Mã danh mục")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required(ErrorMessage = "Trường này không được để trống")]
         [Display(Name = "Tên danh mục")]

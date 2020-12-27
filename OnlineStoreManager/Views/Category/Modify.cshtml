@@ -6,11 +6,11 @@
 @{ Layout = null; }
 @{
    Category p = new Category();
-   string idLabel = (string)p.GetPropertyAttributeValue
+   string idLabel = (string)p.PropAttrValue
        <Category, DisplayAttribute>("Id", "Name"),
-      nameLabel = (string)p.GetPropertyAttributeValue
+      nameLabel = (string)p.PropAttrValue
          <Category, DisplayAttribute>("Name", "Name"),
-      descriptionLabel = (string)p.GetPropertyAttributeValue
+      descriptionLabel = (string)p.PropAttrValue
          <Category, DisplayAttribute>("Description", "Name");
 
    Category formValues = new Category();

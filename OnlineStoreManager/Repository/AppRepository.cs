@@ -37,12 +37,6 @@ namespace OnlineStoreManager.Repository
             return db.Suppliers.ToList();
         }
 
-        public List<Warehouse> Warehouses()
-        {
-            using var db = new EcomContext();
-            return db.Warehouses.ToList();
-        }
-
         public List<Order> Orders()
         {
             using var db = new EcomContext();
@@ -53,16 +47,7 @@ namespace OnlineStoreManager.Repository
         {
             using var db = new EcomContext();
             return db.ImportOrders
-                .Include(p => p.Warehouse)
                 .Include(p => p.ImportStatus).ToList();
-        }
-
-        public List<Stock> Stocks()
-        {
-            using var db = new EcomContext();
-            return db.Stocks
-                .Include(p => p.Warehouse)
-                .ToList();
         }
 
         public Result DeleteAll<TTable>(int[] ids) where TTable: class, new()

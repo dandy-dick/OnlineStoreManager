@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using OnlineStoreManager.Infracstructure;
-using OnlineStoreManager.Models;
 
 namespace OnlineStoreManager.Database.Models
 {
     public class Product
     {
         [Display(Name="Mã sản phẩm")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required(ErrorMessage = "Trường này không được để trống")]
         [Display(Name = "Tên sản phẩm")]
         public string Name { get; set; }
+
+        [Display(Name = "Tồn kho")]
+        public int InStock { get; set; }
 
         [Required(ErrorMessage = "Trường này không được để trống")]
         [Display(Name="Chi phí")]
@@ -44,6 +38,8 @@ namespace OnlineStoreManager.Database.Models
         public int? SupplierId { get; set; }
         public virtual Supplier Supplier { get; set; }
 
-        public int? StockId { get; set; }
+        public string ImageUrl { get; set; }
+
+        public bool OnStore { get; set; } = false;
     }
 }

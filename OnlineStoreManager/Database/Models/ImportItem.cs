@@ -13,7 +13,7 @@ namespace OnlineStoreManager.Database.Models
 {
     public class ImportItem
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int Quantity { get; set; } = 0;
 
         // một khi đã vào kho
@@ -21,11 +21,11 @@ namespace OnlineStoreManager.Database.Models
         // => clone lại thông tin product của đơn hàng
 
         [ForeignKey("ProductId")]
-        public int ProductId { get; set; }
+        public int? ProductId { get; set; }
         public virtual Product Product { get; set; }
 
         [ForeignKey("ImportReceiptId")]
-        public int ImportOrderId { get; set; }
+        public int? ImportOrderId { get; set; }
         public virtual ImportOrder ImportOrder { get; set; }
     }
 }

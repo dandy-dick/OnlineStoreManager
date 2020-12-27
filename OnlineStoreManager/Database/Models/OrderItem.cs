@@ -14,15 +14,15 @@ namespace OnlineStoreManager.Database.Models
 {
     public class OrderItem
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int Quantity { get; set; } = 0;
 
-        [ForeignKey("StockId")]
-        public int StockId { get; set; }
-        public virtual Stock Product { get; set; }
+        [ForeignKey("ProductId")]
+        public int? ProductId { get; set; }
+        public virtual Product Product { get; set; }
 
         [ForeignKey("OrderId")]
-        public int OrderId { get; set; }
+        public int? OrderId { get; set; }
         public virtual Order Order { get; set; }
     }
 

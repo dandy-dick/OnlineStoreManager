@@ -7,7 +7,7 @@ namespace OnlineStoreManager.Database.Models
     public class Supplier
     {
         [Display(Name = "Mã nhà cung cấp")]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required(ErrorMessage = "Trường này không được để trống")]
         [Display(Name = "Tên nhà cung cấp")]

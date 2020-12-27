@@ -1,72 +1,132 @@
 ﻿@using OnlineStoreManager.Infracstructure;
 @using OnlineStoreManager.Database.Models;
-@using System.ComponentModel.DataAnnotations;
 @using OnlineStoreManager.Repository;
 @model OnlineStoreManager.Models.ViewModels.Products.ProductModifyViewModel
 @{ Layout = null; }
 @{
-    Product p = new Product();
-    string idLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Id", "Name"),
-       nameLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Name", "Name"),
-       costLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Cost", "Name"),
-       priceLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Price", "Name"),
-       descriptionLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("Description", "Name"),
-       categoryLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("CategoryId", "Name"),
-       supplierLabel = (string)p.GetPropertyAttributeValue<Product, DisplayAttribute>("SupplierId", "Name");
+   Product formValues = new Product();
+   string categoryId = "", supplierId = "";
+   if (Model.Action == CRUD.Update)
+   {
+      formValues.AssignProperties(Model.Product);
+      categoryId = formValues.Category.Id.ToString();
+      supplierId = formValues.Supplier.Id.ToString();
+   }
 
-    Product formValues = new Product();
-    string categoryId = null, supplierId = null;
-    if (Model.Action == CRUD.Update)
-    {
-       formValues.AssignProperties(Model.Product);
-       categoryId = formValues.Category.Id.ToString();
-       supplierId = formValues.Supplier.Id.ToString();
-    }
+   var states = (Dictionary<string, ModelStateError>)ViewBag.ModelStateDictionary;
+   var keys = new string[6]
+   {
+      "Product.Name","Product.InStock","Product.Cost",
+      "Product.Price","Product.CategoryId","Product.SupplierId",
+         };
+   bool isValid = false;
 }
-@*truyền options cho từng input để tạo w2ui form (render tại client)*@
 
-<div class="w2ui-field">
-   <label>@idLabel</label>
-   <div> <input w2field="text" value="@formValues.Id" name="id" /> </div>
-</div>
+<div class="form-container" style="width:400px;height:500px">
+   @if (formValues.Id != null)
+   {
+      <div class="field-set">
+         <div class="field">
+            <div class="inline-field">
+               <label> Mã sản phẩm: </label>
+               <input type="text" disabled value="@formValues.Id" />
+            </div>
+         </div>
+      </div>
+   }
 
-<div class="w2ui-field">
-   <label>@nameLabel</label>
-   <div> 
-      <input name="name" w2field="text" value="@formValues.Name" /> 
+   <div class="field-set">
+      @{ isValid = states.ContainsKey(keys[0]) && states[keys[0]].InValid(); }
+      <div class="field @( isValid ? "invalid":"" )">
+         <label> Tên sản phẩm: </label>
+         <input type="text" name="name" value="@formValues.Name" />
+         <span class="validation">
+            @if (isValid)
+            {
+               Html.Raw(states[keys[0]].ErrorMessages);
+            }
+         </span>
+      </div>
+      @{ isValid = states.ContainsKey(keys[1]) && states[keys[1]].InValid(); }
+      <div class="field  @( isValid ? "invalid":"" )">
+         <label> Tồn kho: </label>
+         <input type="number" name="instock" value="@formValues.InStock" />
+         <span class="validation">
+            @if (isValid)
+            {
+               Html.Raw(states[keys[1]].ErrorMessages);
+            }
+         </span>
+      </div>
    </div>
-</div>
-<div class="w2ui-field">
-   <label>@costLabel</label>
-   <div>
-      <input w2field="int" value="@formValues.Cost" name="cost" />
+
+   <div class="field-set">
+      @{ isValid = states.ContainsKey(keys[2]) && states[keys[2]].InValid(); }
+      <div class="field @( isValid ? "invalid":"" )">
+         <label> Giá nhập: </label>
+         <input type="number" name="cost" value="@formValues.Cost" />
+         <span class="validation">
+            @if (isValid)
+            {
+               Html.Raw(states[keys[2]].ErrorMessages);
+            }
+         </span>
+      </div>
+
+      @{ isValid = states.ContainsKey(keys[3]) && states[keys[3]].InValid(); }
+      <div class="field @( isValid ? "invalid":"" )">
+         <label> Giá bán: </label>
+         <input type="number" name="instock" value="@formValues.Price" />
+         <span class="validation">
+            @if (isValid)
+            {
+               Html.Raw(states[keys[3]].ErrorMessages);
+            }
+         </span>
+      </div>
    </div>
-</div>
-<div class="w2ui-field">
-   <label>@priceLabel</label>
-   <div> 
-      <input w2field="int" value="@formValues.Price" name="price" /> 
+
+   <div class="field-set">
+      @{ isValid = states.ContainsKey(keys[4]) && states[keys[4]].InValid(); }
+      <div class="field @( isValid ? "invalid":"" )">
+         <label> Thuộc danh mục: </label>
+         <input type="number" name="categoryid" value="@formValues.CategoryId" />
+         <span class="validation">
+            @if (isValid)
+            {
+               Html.Raw(states[keys[4]].ErrorMessages);
+            }
+         </span>
+      </div>
+
+      @{ isValid = states.ContainsKey(keys[5]) && states[keys[5]].InValid(); }
+      <div class="field @( isValid ? "invalid":"" )">
+         <label> Nhà cung cấp: </label>
+         <input type="number" name="supplierid" value="@formValues.SupplierId" />
+         <span class="validation">
+            @if (isValid)
+            {
+               Html.Raw(states[keys[5]].ErrorMessages);
+            }
+         </span>
+      </div>
    </div>
-</div>
-<div class="w2ui-field">
-   <label>@categoryLabel</label>
-   <div>
-      <input w2field="list" url="/Category/GetList"  
-             value = "@(categoryId != null ? $"{{\"id\": {categoryId}, \"text\": \"{formValues.Category.Name}\" }}" : "null")"
-             name="categoryid" />
+
+   <div class="field-set">
+      <div class="field">
+         <div class="inline-field">
+            <label> Hình ảnh: </label>
+            <input type="file" />
+         </div>
+      </div>
    </div>
-</div>
-<div class="w2ui-field">
-   <label>@supplierLabel</label>
-   <div> 
-      <input w2field="list" url="/Supplier/GetList" 
-             value = "@(supplierId != null ? $"{{\"id\": {supplierId}, \"text\": \"{formValues.Supplier.Name}\" }}" : "null")" 
-             name="supplierid" /> 
-   </div>
-</div>
-<div class="w2ui-field">
-   <label>@descriptionLabel</label>
-   <div> 
-      <input w2field="textarea" value="@formValues.Description" name="description" /> 
+
+   <div class="field-set">
+      <div class="field">
+         <label> Mô tả: </label>
+         <textarea type="number" rows="8"
+                   name="description" value="@formValues.Description">
+         </textarea>
+      </div>
    </div>
 </div>

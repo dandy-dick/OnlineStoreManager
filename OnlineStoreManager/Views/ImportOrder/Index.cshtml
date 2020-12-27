@@ -10,11 +10,21 @@
       active: '@ViewBag.TabName',
       style: 'display:flex;align-items:center;',
       tabs: [
-         { id: '@TabName.ImportOrder', text: '@PageMaster.GetTabName(TabName.ImportOrder)' },
-         { id: '@TabName.ImportOrder', text: '@PageMaster.GetTabName(TabName.ImportOrder)' },
+         {
+            id: '@TabName.WaitingImportOrd',
+            text: '@PageMaster.GetTabName(TabName.WaitingImportOrd)'
+         },
+         {
+            id: '@TabName.ImportedOrd',
+            text: '@PageMaster.GetTabName(TabName.ImportedOrd)'
+         },
+         {
+            id: '@TabName.CanceledImportOrd',
+            text: '@PageMaster.GetTabName(TabName.CanceledImportOrd)'
+         },
       ],
       onClick: function (event) {
-         window.location.replace(`/?TabName=${event.target}`);
+         window.location.replace(`/@TabName.ImportedOrd?TabName=${event.target}`);
       }
    });
 </script>
@@ -23,11 +33,12 @@
 <script hide>
 
    var toolbarItemStyle = 'margin: 0 3.5px;';
-   var _toolbarItems = [
+   var _toolbarItems1 = [
       {
          type: 'html',
          html: function (item) {
-            return `<button class="_small_btn" style="${toolbarItemStyle}" `
+            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"`
+               + `      style="${toolbarItemStyle}" `
                + `      onclick="IMPORT_ORDER_PAGE.onAdd()">`
                + `      <img class="small_icon" src="/icons/add.svg"/>`
                + `       Tạo mới `
@@ -37,7 +48,8 @@
       {
          type: 'html',
          html: () => {
-            return `<button class="_small_btn" style="${toolbarItemStyle}"
+            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"
+                  style="${toolbarItemStyle}"
                   onclick="IMPORT_ORDER_PAGE.onDelete()">
                   <img class="small_icon" src="/icons/cancel.svg"/>
                   Xóa
@@ -48,7 +60,8 @@
          type: 'html',
          html: function (item) {
             return `
-                  <button class="_small_btn" style="${toolbarItemStyle}"
+                  <button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "" )"
+                     style="${toolbarItemStyle}"
                      onclick="IMPORT_ORDER_PAGE.onEdit()">
                      <img class="small_icon" src="/icons/pen.svg"/>
                      Chỉnh sửa
@@ -63,15 +76,27 @@
          type: 'html',
          html: function (item) {
             return `
-                  <button class="_small_btn flex_center" style="${toolbarItemStyle}">
-                     <div class="flex_center">
-                         <img class="small_icon" src="/icons/filter.svg"/>
-                        <span style="margin-right: 7px;"> Lọc nâng cao </span>
-                        <span class="filter_counter"> 3 </span>
-                     </div>
-                  </button>
-               `;
+                  <button class="_small_btn" style="${toolbarItemStyle}">
+                     <img class="small_icon" src="/icons/calendar.svg"/>
+                     <span class="bold_span"> Từ: </span>
+                     <span> 23/4/2020 </span>
+                  </button>`;
          }
+      },
+      {
+         type: 'html',
+         html: function (item) {
+            return `
+                  <button class="_small_btn" style="${toolbarItemStyle}">
+                     <img class="small_icon" src="/icons/calendar.svg"/>
+                     <span class="bold_span"> Đến: </span>
+                     <span> 23/4/2020 </span>
+                  </button>`;
+         }
+      },
+      {
+         type: 'break',
+         style: 'margin: 0 21px;',
       },
       {
          type: 'html',
@@ -92,6 +117,7 @@
                   </button>`;
          }
       },
+
       {
          type: 'break',
          style: 'margin: 0 21px;',
@@ -106,12 +132,32 @@
                      Tải lại </button>`;
          }
       },
+      {
+         tabs: ['@TabName.WaitingImportOrd'],
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"`
+               + `      onclick="IMPORT_ORDER_PAGE.onAdd()">`
+               + `       Hoàn tất đơn hàng `
+               + `</button>`;
+         },
+      },
+      {
+         tabs: ['@TabName.WaitingImportOrd'],
+         type: 'html',
+         html: function (item) {
+            return `<button class="_small_btn" style="${toolbarItemStyle}"`
+               + `      onclick="IMPORT_ORDER_PAGE.onAdd()">`
+               + `       Hủy đơn hàng `
+               + `</button>`;
+         },
+      },
    ];
 
    $().w2toolbar({
-      name: '_toolbar',
+      name: '_toolbar_top',
       style: 'height:50px;padding-top:11px;',
-      items: _toolbarItems.filter(p => {
+      items: _toolbarItems1.filter(p => {
          if (p.tabs)
             return p.tabs.find(p => p == '@ViewBag.TabName')
          return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
@@ -123,53 +169,51 @@
 <script hide>
    @{
        var o = new ImportOrder();
-       string idTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("Id", "Name"),
-          discountTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("Discount", "Name"),
-          deliveryDateTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("ExpectedDeliveryDate", "Name"),
-          warehouseTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("WarehouseId", "Name"),
-          statusTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("ImportStatusId", "Name"),
-          cancelTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("CancelDescription", "Name"),
-          descriptionTitle = (string)o.GetPropertyAttributeValue
-          <ImportOrder, DisplayAttribute>("Description", "Name");
+       var captions = new
+       {
+          id = o.PropAttrValue<ImportOrder, DisplayAttribute>("Id", "Name"),
+          createdDate = o.PropAttrValue<ImportOrder, DisplayAttribute>("CreatedDate", "Name"),
+          completedDate = o.PropAttrValue<ImportOrder, DisplayAttribute>("CompletedDate", "Name"),
+          deliveryDate = o.PropAttrValue<ImportOrder, DisplayAttribute>("ExpectedDeliveryDate", "Name"),
+          description = o.PropAttrValue<ImportOrder, DisplayAttribute>("Description", "Name"),
+          status = o.PropAttrValue<ImportOrder, DisplayAttribute>("OrderStatusId", "Name"),
+          cancelDescription = "Lý do hủy đơn"
+       };
    }
 
-   @*
-      Id
-      Discount
-      ExpectedDeliveryDate
-      WarehouseId
-      ImportStatusId
-      CancelDescription
-      Description
-   *@
    var _columns = [
-      { field: 'recid', caption: '@idTitle', size: '5%' },
-      { field: 'discount', caption: '@discountTitle', size: '14%' },
-      { field: 'expecteddeliverydate', caption: '@deliveryDateTitle', size: '14%' },
-      { field: 'warehouse', caption: '@warehouseTitle', size: '14%' },
-      { field: 'importstatus', caption: '@statusTitle', size: '14%' },
-      { field: 'canceldescription', caption: '@cancelTitle', size: '14%' },
-      { field: 'description', caption: '@descriptionTitle', size: '14%' },
+      { field: 'id', caption: '@captions.id', size: '5%' },
+      { field: 'createddate', caption: '@captions.createdDate', size: '10%' },
+      {
+         tabs: ["@TabName.WaitingImportOrd"],
+         field: 'expecteddeliverydate', caption: '@captions.deliveryDate', size: '10%'
+      },
+      {
+         tabs: ["@TabName.CompletedOrder"],
+         field: 'completeddate', caption: '@captions.createdDate', size: '10%'
+      },
+      { field: 'orderstatus', caption: '@captions.status', size: '10%' },
 
+      {
+         tabs: ["@TabName.WaitingImportOrd","@TabName.CompletedOrder"],
+         field: 'description', caption: '@captions.description', size: '10%',
+      },
+      {
+         tabs: ["@TabName.CanceledImportOrd"],
+         field: 'description', caption: '@captions.cancelDescription', size: '10%',
+      },
    ];
 
    var _records = [
-      @{ var recordFields = new string[9]; }
+      @{ var recordFields = new string[6]; }
       @foreach (var item in Model.ImportOrders)
       {
-         recordFields[0] = "recid:" + $" '{ item.Id }' ";
-         recordFields[1] = "discount:" + $" '{ item.Discount }' ";
-         recordFields[2] = "expecteddeliverydate:" + $" '{ item.ExpectedDeliveryDate }' ";
-         recordFields[3] = "warehouse:" + $" '{ item.Warehouse.Name }' ";
-         recordFields[4] = "importstatus:" + $" '{ item.ImportStatus.Value }' ";
-         recordFields[5] = "canceldescription:" + $" '{ item.CancelDescription }' ";
-         recordFields[6] = "description:" + $" '{ item.Description }' ";
+         recordFields[0] = "id:" + $" '{ item.Id }' ";
+         recordFields[1] = "createddate:" + $" '{ item.ExpectedDeliveryDate }' ";
+         recordFields[2] = "completeddate:" + $" '{ item.CompletedDate}' ";
+         recordFields[3] = "expecteddeliverydate:" + $" '{ item.ExpectedDeliveryDate }' ";
+         recordFields[4] = "orderstatus:" + $" '{ item.ImportStatus.Value }' ";
+         recordFields[5] = "description:" + $" '{ item.Description }' ";
 
          @Html.Raw("{ " + String.Join(',', recordFields) + " }," );
       }
@@ -177,6 +221,7 @@
 
    $().w2grid({
       name: '_grid',
+      recid: 'id',
       show: {
          selectColumn: true,
          lineNumbers: true,
@@ -187,7 +232,12 @@
             return p.tabs.find(p => p == '@ViewBag.TabName')
          return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
       }),
-      records: _records
+      records: _records,
+      onRender: function (e) {
+         e.onComplete = function () {
+            this.refresh();
+         }
+      }
    });
 </script>
 
@@ -204,7 +254,7 @@
             type: 'top', size: 35,
             content: `
                <div style="height:35px;">
-                  @Html.Partial("_W2uiPaginationPartial", new
+                  @await Html.PartialAsync("_W2uiPaginationPartial", new
                    {
                       CurrentPage = Model.CurrentPage,
                       TotalItems = Model.TotalItems,
@@ -229,24 +279,33 @@
    $().w2layout({
       name: '_import_order_index_top',
       panels: [
-         { type: 'left', size: '100%' },     // tabs,
-         { type: 'right', size: '0%' },    // tab controls
+         { type: 'left', size: '70%' },     // tabs,
+         { type: 'right', size: '30%' },    // tab controls
       ]
    });
 
    $().w2layout({
+      name: '_toolbar',
+      panels: [
+         { type: 'top', size: '50', style: panelStyle },     // tabs,
+      ]
+   });
+   w2ui['_toolbar'].content('top', w2ui['_toolbar_top']);
+
+   $().w2layout({
       name: '_import_order_index_main',
       panels: [
-         { type: 'top', size: 50, style: panelStyle },     // toolbar,
+         { type: 'top', size: 50 },     // toolbar,
          { type: 'main' },     // grid
          { type: 'bottom', size: 35, style: panelStyle }    // pagination
       ]
    });
 
    w2ui['_import_order_index_top'].content('left', w2ui['_tabs']);
-   w2ui['_import_order_index_top'].content('right', w2ui['_tabs_controls']);
+   w2ui['_import_order_index_top'].content('right', w2ui['_tab_toolbar']);
 
    w2ui['_import_order_index_main'].content('top', w2ui['_toolbar']);
+
    w2ui['_import_order_index_main'].content('main', w2ui['_grid']);
    w2ui['_import_order_index_main'].content('bottom', w2ui['_pagination']);
 
