@@ -84,11 +84,13 @@ function _w2uiPagination(currentPage = 1, totalItems = 0, pageSize = 20) {
         maxOffset: null,
         init: function () {
             this.totalPage = Math.ceil(totalItems / pageSize);
-            this.totalPage = (this.totalPage) ? 1 : this.totalPage;
+            this.totalPage = (this.totalPage) ? this.totalPage : 1;
 
             this.currentOffset = Math.ceil(this.currentPage / this.pageOffset) - 1;
             this.currentOffset = (this.currentOffset < 0) ? 0 : this.currentOffset;
             this.maxOffset = Math.floor(this.totalPage / this.pageOffset) - 1;
+            this.maxOffset = (this.maxOffset < 0) ? 0 : this.maxOffset;
+
             this.start = this.currentOffset * this.pageOffset + 1;
         },
         updatePagination: function () {

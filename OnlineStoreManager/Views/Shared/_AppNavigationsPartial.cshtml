@@ -46,11 +46,6 @@
                   selected: @(ViewBag.TabName == TabName.Order ? "true" : "false"),
                   onClick: () => window.location = '/@TabName.Order?TabName=@TabName.PaidOrder',
                },
-               {
-                  id: 'level-1-2', text: '@PageMaster.GetTabName(TabName.ImportOrder)',
-                  selected: @(ViewBag.TabName == TabName.ImportOrder ? "true" : "false"),
-                  onClick: () => window.location = '/@TabName.ImportOrder?TabName=@TabName.WaitingImportOrd',
-               },
             ]
          },
          {

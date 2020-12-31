@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\Views\ImportOrder\Index.js" />
     <Content Remove="wwwroot\js\Views\Order\Index.js" />
     <Content Remove="wwwroot\js\Views\Supplier\Index.js" />
     <Content Remove="wwwroot\js\Views\Category\Index.js" />
@@ -21,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\js\Views\ImportOrder\Index.js" />
     <None Include="wwwroot\js\Views\Order\Index.js" />
     <None Include="wwwroot\js\Views\Supplier\Index.js" />
     <None Include="wwwroot\js\Views\Category\Index.js" />

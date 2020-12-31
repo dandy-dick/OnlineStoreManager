@@ -14,9 +14,6 @@ namespace OnlineStoreManager.Database.Models
         [Display(Name = "Ngày thanh toán")]
         public string CreatedDate { get; set; }
 
-        [Display(Name = "Ngày hoàn thành")]
-        public string CompletedDate { get; set; }
-
         [Display(Name = "Địa chỉ giao")]
         [Required(ErrorMessage = "Trường này không được để trống")]
         public string DeliveryAddress { get; set; }
@@ -32,11 +29,6 @@ namespace OnlineStoreManager.Database.Models
         [Display(Name = "Ngày giao dự kiến")]
         [Required(ErrorMessage = "Trường này không được để trống")]
         public string ExpectedDeliveryDate { get; set; }
-
-        [ForeignKey("OrderStatusId")]
-        [Display(Name = "Trạng thái")]
-        public int? OrderStatusId { get; set; }
-        public virtual OrderStatus OrderStatus { get; set; }
 
         [Display(Name = "Mô tả đơn hàng")]
         public string Description { get; set; } = "";

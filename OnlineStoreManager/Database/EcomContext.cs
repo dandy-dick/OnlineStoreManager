@@ -9,9 +9,6 @@ namespace OnlineStoreManager.Database
     public class EcomContext: DbContext
     {
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ImportOrder> ImportOrders { get; set; }
-        public DbSet<ImportItem> ImportItems { get; set; }
-        public DbSet<ImportStatus> ImportStatuses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }

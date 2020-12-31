@@ -12,9 +12,6 @@ namespace OnlineStoreManager.Database.Models
         [Display(Name = "Tên sản phẩm")]
         public string Name { get; set; }
 
-        [Display(Name = "Tồn kho")]
-        public int InStock { get; set; }
-
         [Required(ErrorMessage = "Trường này không được để trống")]
         [Display(Name="Chi phí")]
         public double Cost { get; set; }
@@ -39,7 +36,5 @@ namespace OnlineStoreManager.Database.Models
         public virtual Supplier Supplier { get; set; }
 
         public string ImageUrl { get; set; }
-
-        public bool OnStore { get; set; } = false;
     }
 }
