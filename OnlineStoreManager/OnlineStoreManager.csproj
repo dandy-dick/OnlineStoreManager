@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\Views\Order\Index.js" />
+    <Content Remove="wwwroot\js\Views\Report\Index.js" />
     <Content Remove="wwwroot\js\Views\Supplier\Index.js" />
     <Content Remove="wwwroot\js\Views\Category\Index.js" />
   </ItemGroup>
@@ -21,9 +22,21 @@
 
   <ItemGroup>
     <None Include="wwwroot\js\Views\Order\Index.js" />
+    <None Include="wwwroot\js\Views\Report\Index.js" />
     <None Include="wwwroot\js\Views\Supplier\Index.js" />
     <None Include="wwwroot\js\Views\Category\Index.js" />
     <None Include="wwwroot\js\Views\Product\Index.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Supplier\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\Supplier\Modify.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

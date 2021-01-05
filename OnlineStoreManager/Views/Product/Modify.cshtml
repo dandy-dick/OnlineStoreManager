@@ -5,128 +5,105 @@
 @{ Layout = null; }
 @{
    Product formValues = new Product();
-   string categoryId = "", supplierId = "";
+   string categoryName = "", supplierName = "";
    if (Model.Action == CRUD.Update)
    {
       formValues.AssignProperties(Model.Product);
-      categoryId = formValues.Category.Id.ToString();
-      supplierId = formValues.Supplier.Id.ToString();
+      categoryName = formValues.Category.Name;
+      supplierName = formValues.Supplier.Name;
    }
-
-   var states = (Dictionary<string, ModelStateError>)ViewBag.ModelStateDictionary;
-   var keys = new string[6]
-   {
-      "Product.Name","Product.InStock","Product.Cost",
-      "Product.Price","Product.CategoryId","Product.SupplierId",
-         };
-   bool isValid = false;
 }
 
-<div class="form-container" style="width:400px;height:500px">
-   @if (formValues.Id != null)
-   {
+
+<div class="flex" style="background-color:#fafafa">
+
+   <div class="flex-col align-center" style="margin-right:1rem;padding:1rem;">
+      <img class="product-img" src="/_product-images/@formValues.ImageUrl" 
+           style="width: 150px;height: 170px;background-color:red;" />
+
+      <input type="file" name="photo"
+             accept=".jpg,.png,.jpeg" style="object-fit:cover;object-position:center;"/>
+      <button class="medium_btn" style="background-color: #5f84e8;
+      margin-top: 1rem;"
+              onclick="selectPhoto()">
+         Thay đổi
+      </button>
+
+      <script>
+         function selectPhoto() {
+            $('input[name="photo"]').trigger('click');
+         }
+
+         $('input[name="photo"]').css({ 'display': 'none' });
+         $('input[name="photo"]').change(function (e) {
+            var input = e.target;
+            if (input.files && input.files[0]) {
+               var reader = new FileReader();
+               reader.onload = function (e) {
+                  $('.product-img').attr('src', e.target.result)
+               };
+               reader.readAsDataURL(input.files[0]);
+            }
+         })
+      </script>
+   </div>
+
+   <div class="form-container" style="width:400px;">
+      <div class="field-set">
+         @if (formValues.Id != null)
+         {
+            <div class="field">
+               <div class="inline-field">
+                  <label> Mã sản phẩm: </label>
+                  <input type="text" disabled name="id" value="@formValues.Id" />
+               </div>
+            </div>
+         }
+
+         <div class="field ">
+            <label> Tên sản phẩm: </label>
+            <input type="text" name="name" value="@formValues.Name" />
+            <span class="validation" for="RequestProduct.Name"></span>
+         </div>
+      </div>
+
+      <div class="field-set">
+         <div class="field ">
+            <label> Giá nhập: </label>
+            <input type="number" name="cost" value="@formValues.Cost" />
+            <span class="validation" for="RequestProduct.Cost"></span>
+         </div>
+
+         <div class="field ">
+            <label> Giá bán: </label>
+            <input type="number" name="price" value="@formValues.Price" />
+            <span class="validation" for="RequestProduct.Price"></span>
+         </div>
+      </div>
+
+      <div class="field-set">
+         <div class="field" style="position:relative;">
+            <label> Thuộc danh mục: </label>
+            <input id="categoryname" type="text" name="categoryname" value="@categoryName" />
+            <span class="validation" for="RequestProduct.CategoryName"> </span>
+         </div>
+
+         <div class="field" style="position:relative;">
+            <label> Nhà cung cấp: </label>
+            <input id="suppliername"
+                   type="text" name="suppliername" value="@supplierName" />
+            <span class="validation" for="RequestProduct.SupplierName"></span>
+         </div>
+      </div>
+
       <div class="field-set">
          <div class="field">
-            <div class="inline-field">
-               <label> Mã sản phẩm: </label>
-               <input type="text" disabled value="@formValues.Id" />
-            </div>
+            <label> Mô tả: </label>
+            <textarea type="number" rows="8"
+                      name="description">@formValues.Description</textarea>
          </div>
-      </div>
-   }
-
-   <div class="field-set">
-      @{ isValid = states.ContainsKey(keys[0]) && states[keys[0]].InValid(); }
-      <div class="field @( isValid ? "invalid":"" )">
-         <label> Tên sản phẩm: </label>
-         <input type="text" name="name" value="@formValues.Name" />
-         <span class="validation">
-            @if (isValid)
-            {
-               Html.Raw(states[keys[0]].ErrorMessages);
-            }
-         </span>
-      </div>
-      @{ isValid = states.ContainsKey(keys[1]) && states[keys[1]].InValid(); }
-      <div class="field  @( isValid ? "invalid":"" )">
-         <label> Tồn kho: </label>
-         <input type="number" name="instock" value="@formValues.InStock" />
-         <span class="validation">
-            @if (isValid)
-            {
-               Html.Raw(states[keys[1]].ErrorMessages);
-            }
-         </span>
-      </div>
-   </div>
-
-   <div class="field-set">
-      @{ isValid = states.ContainsKey(keys[2]) && states[keys[2]].InValid(); }
-      <div class="field @( isValid ? "invalid":"" )">
-         <label> Giá nhập: </label>
-         <input type="number" name="cost" value="@formValues.Cost" />
-         <span class="validation">
-            @if (isValid)
-            {
-               Html.Raw(states[keys[2]].ErrorMessages);
-            }
-         </span>
-      </div>
-
-      @{ isValid = states.ContainsKey(keys[3]) && states[keys[3]].InValid(); }
-      <div class="field @( isValid ? "invalid":"" )">
-         <label> Giá bán: </label>
-         <input type="number" name="instock" value="@formValues.Price" />
-         <span class="validation">
-            @if (isValid)
-            {
-               Html.Raw(states[keys[3]].ErrorMessages);
-            }
-         </span>
-      </div>
-   </div>
-
-   <div class="field-set">
-      @{ isValid = states.ContainsKey(keys[4]) && states[keys[4]].InValid(); }
-      <div class="field @( isValid ? "invalid":"" )">
-         <label> Thuộc danh mục: </label>
-         <input type="number" name="categoryid" value="@formValues.CategoryId" />
-         <span class="validation">
-            @if (isValid)
-            {
-               Html.Raw(states[keys[4]].ErrorMessages);
-            }
-         </span>
-      </div>
-
-      @{ isValid = states.ContainsKey(keys[5]) && states[keys[5]].InValid(); }
-      <div class="field @( isValid ? "invalid":"" )">
-         <label> Nhà cung cấp: </label>
-         <input type="number" name="supplierid" value="@formValues.SupplierId" />
-         <span class="validation">
-            @if (isValid)
-            {
-               Html.Raw(states[keys[5]].ErrorMessages);
-            }
-         </span>
-      </div>
-   </div>
-
-   <div class="field-set">
-      <div class="field">
-         <div class="inline-field">
-            <label> Hình ảnh: </label>
-            <input type="file" />
-         </div>
-      </div>
-   </div>
-
-   <div class="field-set">
-      <div class="field">
-         <label> Mô tả: </label>
-         <textarea type="number" rows="8"
-                   name="description" value="@formValues.Description">
-         </textarea>
       </div>
    </div>
 </div>
+
+

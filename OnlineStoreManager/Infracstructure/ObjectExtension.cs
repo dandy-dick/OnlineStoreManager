@@ -139,12 +139,16 @@ public static object PropAttrValue<TSrc,TAttr>(this TSrc src, string propertyNam
                 "ýỳỵỷỹ",
                 "ÝỲỴỶỸ"
             };
-            //Thay thế và lọc dấu từng char      
-            for (int i = 1; i < VietNamChar.Length; i++)
+            //Thay thế và lọc dấu từng char    
+            if (str != null)
             {
-                for (int j = 0; j < VietNamChar[i].Length; j++)
-                    str = str.Replace(VietNamChar[i][j], VietNamChar[0][i - 1]);
+                for (int i = 1; i < VietNamChar.Length; i++)
+                {
+                    for (int j = 0; j < VietNamChar[i].Length; j++)
+                        str = str.Replace(VietNamChar[i][j], VietNamChar[0][i - 1]);
+                }
             }
+
             return str;
         }
     }

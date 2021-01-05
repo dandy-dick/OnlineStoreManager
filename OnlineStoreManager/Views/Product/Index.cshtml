@@ -1,6 +1,17 @@
 ﻿@using OnlineStoreManager.Infracstructure;
 @model OnlineStoreManager.Models.ViewModels.ProductIndexViewModel
 @inject IPageMaster PageMaster
+
+<!-- /* Request Product Images */-->
+
+<div id="product-images">
+   @foreach (var item in Model.Products)
+   {
+      <img src="/_product-images/@(item.ImageUrl?? "default.jpg")" />
+   }
+</div>
+
+
 <!-- /* RENDER TABS */ -->
 <script hide>
    $().w2tabs({
@@ -108,35 +119,46 @@
 <script hide>
 
    var _columns = [
-      // Product Tab Grid Columns
-      { field: 'id', caption: 'ID', size: '10%'},
+      {
+         field: 'name', caption: 'Sản phẩm', size: '25%',
+         render: function (rec) {
+            return `
+               <div class="flex align-center" style="padding: 0.5rem;">
+                  <img src="/_product-images/${ rec.imageurl }"
+                     style="width: 60px;height:60px;"/>
+                  <div style="margin-left: 0.5rem; font-weight:bold">
+                     ${ rec.name } </div>
+               </div>
 
-      { field: 'name', caption: 'Tên sản phẩm', size: '30%'},
+            `;
+         }
+      },
 
-      { field: 'cost', caption: 'Chi phí', size: '20%'},
+      { field: 'id', caption: 'Mã Sp', size: '6%' },
 
-      { field: 'price', caption: 'Giá bán', size: '20%'},
+      { field: 'cost', caption: 'Chi phí', size: '10%'},
 
-      { field: 'instock', caption: 'Tồn kho', size: '20%'},
+      { field: 'price', caption: 'Giá bán', size: '10%'},
 
       { field: 'category', caption: 'Danh mục', size: '15%'},
 
       { field: 'supplier', caption: 'Nhà cung cấp', size: '15%'},
 
-      { field: 'description', caption: 'Mô tả', size: '30%' },
+      { field: 'description', caption: 'Mô tả', size: '20%' },
    ];
 
    var _records = [
       @foreach (var item in Model.Products)
       {
-         var recordFields = new string[7];
+         var recordFields = new string[8];
          recordFields[0] = "id:" + $" '{ item.Id }' ";
          recordFields[1] = "name:" + $" '{ item.Name }' ";
-         recordFields[2] = "cost:" + $" '{ item.Cost }' ";
-         recordFields[3] = "price:" + $" '{ item.Price }' ";
-         recordFields[4] = "category:" + $" '{ item.Category.Name }' ";
-         recordFields[5] = "supplier:" + $" '{ item.Supplier.Name }' ";
-         recordFields[6] = "description:" + $" '{ item.Description }' ";
+         recordFields[2] = "imageurl:" + $" '{ item.ImageUrl }' ";
+         recordFields[3] = "cost:" + $" '{ item.Cost }' ";
+         recordFields[4] = "price:" + $" '{ item.Price }' ";
+         recordFields[5] = "category:" + $" '{ item.Category.Name }' ";
+         recordFields[6] = "supplier:" + $" '{ item.Supplier.Name }' ";
+         recordFields[7] = "description:" + $" '{ item.Description }' ";
 
          @Html.Raw("{ " + String.Join(',', recordFields) + " }," );
       }
@@ -159,6 +181,9 @@
       onRender: function (e) {
          e.onComplete = function () {
             this.refresh();
+
+            hideScripts();
+            extendQuery();
          }
       }
    });
@@ -166,10 +191,6 @@
 
 <!-- /* RENDER GRID PAGINATION  */-->
 <script hide>
-   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
-   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
-   PAGINATION.init();
-
    $().w2layout({
       name: '_pagination',
       panels: [
@@ -185,7 +206,17 @@
                    })
                </div>`,
          },
-      ]
+      ],
+      onRender: function (e) {
+         e.onComplete = function () {
+            _w2uiPagination({
+               container: '#w2ui-pagination',
+               pageSize: @Model.PageSize,
+               currentPage: @Model.CurrentPage,
+               totalItems: @Model.TotalItems,
+            });
+         }
+      }
    });
 </script>
 
@@ -196,7 +227,7 @@
       panels: [
          { type: 'top', size: 30, style: panelStyle },     // tabs,
          { type: 'main' },    // product listview
-      ]
+      ],
    });
 
    $().w2layout({
@@ -213,7 +244,7 @@
          { type: 'top', size: 50, style: panelStyle },     // toolbar,
          { type: 'main' },     // grid
          { type: 'bottom', size: 35, style: panelStyle }    // pagination
-      ]
+      ],
    });
 
    w2ui['_product_index_top'].content('left', w2ui['_tabs']);
@@ -227,6 +258,10 @@
    w2ui['_product_index'].content('main', w2ui['_product_index_main']);
 
    w2ui['_main_content'].content('main', w2ui['_product_index']);
+
+
+   // remove all product images elements
+   htmlToString("#product-images", true);
 </script>
 
 

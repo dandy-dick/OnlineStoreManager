@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OnlineStoreManager.Infracstructure;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace OnlineStoreManager.Database.Models
@@ -16,6 +17,7 @@ namespace OnlineStoreManager.Database.Models
         [Display(Name = "Mô tả thêm")]
         public string Description { get; set; } = "";
 
+        [Exclude("AssignProperties")]
         public virtual ICollection<Product> Products { get; set; }
     }
 }

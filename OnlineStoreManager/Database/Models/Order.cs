@@ -26,10 +26,6 @@ namespace OnlineStoreManager.Database.Models
         [Required(ErrorMessage = "Trường này không được để trống")]
         public string ReceiverName { get; set; }
 
-        [Display(Name = "Ngày giao dự kiến")]
-        [Required(ErrorMessage = "Trường này không được để trống")]
-        public string ExpectedDeliveryDate { get; set; }
-
         [Display(Name = "Mô tả đơn hàng")]
         public string Description { get; set; } = "";
 

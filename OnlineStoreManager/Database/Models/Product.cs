@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OnlineStoreManager.Infracstructure;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineStoreManager.Database.Models
@@ -23,18 +24,18 @@ namespace OnlineStoreManager.Database.Models
         [Display(Name = "Mô tả thêm")]
         public string Description { get; set; } = "";
 
-        [Required(ErrorMessage = "Trường này không được để trống")]
-        [ForeignKey("CartId")]
+        [ForeignKey("CartegoryId")]
         [Display(Name = "Thuộc danh mục")]
         public int? CategoryId { get; set; }
+
         public virtual Category Category { get; set; }
 
-        [Required(ErrorMessage = "Trường này không được để trống")]
         [ForeignKey("SupplierId")]
         [Display(Name = "Thuộc nhà cung cấp")]
         public int? SupplierId { get; set; }
+        
         public virtual Supplier Supplier { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = "default.jpg";
     }
 }

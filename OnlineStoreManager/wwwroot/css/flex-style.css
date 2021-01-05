@@ -3,7 +3,8 @@
     display: flex;
 }
 
-.flex_col {
+.flex_col,
+.flex-col {
     display: flex;
     flex-direction: column;
 }
@@ -34,12 +35,14 @@
 }
 
 
-.flex_center {
+.flex_center,
+.flex-center {
     display: flex !important;
     align-items: center;
     justify-content: center;
 }
 
+.flex-col-center,
 .flex_col_center {
     display: flex !important;
     flex-direction: column;

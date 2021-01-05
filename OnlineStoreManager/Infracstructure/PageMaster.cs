@@ -31,14 +31,12 @@ namespace OnlineStoreManager.Infracstructure
         ExportedOrder = 5,
         CompletedOrder = 6,
         CanceledOrder = 7,
-        DemurrageOrder = 3,
         
         // don hang nhap kho
         ImportOrder = 9,
         WaitingImportOrd = 10,
         ImportedOrd = 11,
         CanceledImportOrd = 12,
-        DemurrageImportOrd = 13,
 
         // quan ly ton kho
         Stock = 14,
@@ -85,13 +83,11 @@ namespace OnlineStoreManager.Infracstructure
                 case TabName.ExportedOrder:
                 case TabName.CompletedOrder:
                 case TabName.CanceledOrder:
-                case TabName.DemurrageOrder:
                     return PageName.Order;
                 case TabName.ImportOrder:
                 case TabName.WaitingImportOrd:
                 case TabName.ImportedOrd:
                 case TabName.CanceledImportOrd:
-                case TabName.DemurrageImportOrd:
                 case TabName.Stock:
                 case TabName.Warehouse:
                     return PageName.Inventory;
@@ -118,13 +114,11 @@ namespace OnlineStoreManager.Infracstructure
                 TabName.ExportedOrder => "Đã xuất kho",
                 TabName.CompletedOrder => "Hoàn tất",
                 TabName.CanceledOrder => "Bị hủy",
-                TabName.DemurrageOrder => "Trễ hạn giao hàng",
 
                 TabName.ImportOrder => "Đơn hàng nhập kho",
                 TabName.WaitingImportOrd => "Đang xử lí",
                 TabName.ImportedOrd => "Đã nhập kho",
                 TabName.CanceledImportOrd => "Bị hủy",
-                TabName.DemurrageImportOrd => "Trễ hạn giao hàng",
 
                 TabName.Stock => "Sản phẩm tồn kho",
                 TabName.Warehouse => "Kho hàng",

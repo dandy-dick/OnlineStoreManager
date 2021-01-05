@@ -51,8 +51,8 @@ namespace OnlineStoreManager.Models.ViewModels
             string search = this.SearchText.TiengVietKhongDau().ToLower();
             return src.Where(p =>
             {
-                return ((string)p.Name).TiengVietKhongDau().ToLower().Contains(search)
-                        || ((string)p.Description).TiengVietKhongDau().ToLower().Contains(search);
+                return ((string)p.Name??"").TiengVietKhongDau().ToLower().Contains(search)
+                        || ((string)p.Description??"").TiengVietKhongDau().ToLower().Contains(search);
             });
         }
 

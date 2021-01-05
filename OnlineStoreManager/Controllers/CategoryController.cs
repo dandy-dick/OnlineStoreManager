@@ -60,16 +60,12 @@ namespace OnlineStoreManager.Controllers
             return Result.Fail(null, modelError);
         }
 
-        public dynamic GetList(string request)
+        public dynamic GetList()
         {
-            var obj = JsonConvert.DeserializeObject<GetListRequestModel>(request);
             var model = new CategoryGetListActionModel();
-            model.ObjectAssign(obj);
-            
             var result = model.Execute();
             return new
             {
-                status = "success",
                 records = result
             };
         }

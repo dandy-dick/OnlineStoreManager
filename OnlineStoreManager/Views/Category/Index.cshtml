@@ -144,6 +144,8 @@
       onRender: function (e) {
          e.onComplete = function () {
             this.refresh();
+            hideScripts();
+            extendQuery();
          }
       }
    });
@@ -151,10 +153,6 @@
 
 <!-- /* RENDER GRID PAGINATION  */-->
 <script hide>
-   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
-   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
-   PAGINATION.init();
-
    $().w2layout({
       name: '_pagination',
       panels: [
@@ -170,7 +168,17 @@
                    })
                </div>`,
          },
-      ]
+      ],
+      onRender: function (e) {
+         e.onComplete = function () {
+            _w2uiPagination({
+               container: '#w2ui-pagination',
+               pageSize: @Model.PageSize,
+               currentPage: @Model.CurrentPage,
+               totalItems: @Model.TotalItems,
+            });
+         }
+      }
    });
 </script>
 

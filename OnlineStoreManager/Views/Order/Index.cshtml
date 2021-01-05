@@ -3,35 +3,6 @@
 @using System.ComponentModel.DataAnnotations;
 @model OnlineStoreManager.Models.ViewModels.OrderIndexViewModel
 @inject IPageMaster PageMaster
-<!-- /* RENDER TABS */ -->
-<script hide>
-   $().w2tabs({
-      name: '_tabs',
-      active: '@ViewBag.TabName',
-      style: 'display:flex;align-items:center;',
-      tabs: [
-         {
-            id: '@TabName.PaidOrder',
-            text: '@PageMaster.GetTabName(TabName.PaidOrder)'
-         },
-         {
-            id: '@TabName.ExportedOrder',
-            text: '@PageMaster.GetTabName(TabName.ExportedOrder)'
-         },
-         {
-            id: '@TabName.CompletedOrder',
-            text: '@PageMaster.GetTabName(TabName.CompletedOrder)'
-         },
-         {
-            id: '@TabName.CanceledOrder',
-            text: '@PageMaster.GetTabName(TabName.CanceledOrder)'
-         },
-      ],
-      onClick: function (event) {
-         window.location.replace(`/@TabName.Order?TabName=${event.target}`);
-      }
-   });
-</script>
 
 <!-- /*  RENDER GRID TOOLBAR */ -->
 <script hide>
@@ -135,40 +106,6 @@
                      Tải lại </button>`;
          }
       },
-      {
-         tabs: ['@TabName.PaidOrder'],
-         type: 'html',
-         html: function (item) {
-            return `<button class="_small_btn" style="${toolbarItemStyle}"`
-               + `      onclick="ORDER_PAGE.onAdd()">`
-               + `       Đã xuất kho `
-               + `</button>`;
-         },
-      },
-      {
-         type: 'break',
-         style: 'margin: 0 21px;',
-      },
-      {
-         tabs: ['@TabName.ExportedOrder'],
-         type: 'html',
-         html: function (item) {
-            return `<button class="_small_btn" style="${toolbarItemStyle}"`
-               + `      onclick="ORDER_PAGE.onAdd()">`
-               + `       Hoàn tất đơn hàng `
-               + `</button>`;
-         },
-      },
-      {
-         tabs: ['@TabName.PaidOrder','@TabName.ExportedOrder'],
-         type: 'html',
-         html: function (item) {
-            return `<button class="_small_btn" style="${toolbarItemStyle}"`
-               + `      onclick="ORDER_PAGE.onAdd()">`
-               + `       Hủy đơn hàng `
-               + `</button>`;
-         },
-      },
    ];
 
    $().w2toolbar({
@@ -184,66 +121,26 @@
 
 <!-- /*  RENDER GRID */ -->
 <script hide>
-   @{
-       var o = new Order();
-       var captions = new
-       {
-          id = o.PropAttrValue<Order, DisplayAttribute>("Id", "Name"),
-          createdDate = o.PropAttrValue<Order, DisplayAttribute>("CreatedDate", "Name"),
-          completedDate = o.PropAttrValue<Order, DisplayAttribute>("CompletedDate", "Name"),
-          description = o.PropAttrValue<Order, DisplayAttribute>("Description", "Name"),
-          address = o.PropAttrValue<Order, DisplayAttribute>("DeliveryAddress", "Name"),
-          name = o.PropAttrValue<Order, DisplayAttribute>("ReceiverName", "Name"),
-          phoneNumber = o.PropAttrValue<Order, DisplayAttribute>("ReceiverPhoneNumber", "Name"),
-          deliveryDate = o.PropAttrValue<Order, DisplayAttribute>("ExpectedDeliveryDate", "Name"),
-          status = o.PropAttrValue<Order, DisplayAttribute>("OrderStatusId", "Name"),
-          cancelDescription = "Lý do hủy đơn"
-       };
-   }
 
    var _columns = [
-      { field: 'id', caption: '@captions.id', size: '5%' },
-      { field: 'createddate', caption: '@captions.createdDate', size: '10%' },
-      {
-         tabs: ["@TabName.PaidOrder","@TabName.ExportedOrder"],
-         field: 'expecteddeliverydate', caption: '@captions.deliveryDate', size: '10%'
-      },
-      { field: 'receivername', caption: '@captions.name', size: '10%' },
-      { field: 'deliveryaddress', caption: '@captions.address', size: '10%' },
-      { field: 'receiverphonenumber', caption: '@captions.phoneNumber', size: '10%' },
-      { field: 'orderstatus', caption: '@captions.status', size: '10%' },
-      {
-         tabs: ["@TabName.CompletedOrder"],
-         field: 'completeddate', caption: '@captions.completedDate', size: '10%'
-      },
-      {
-         tabs: ["@TabName.PaidOrder","@TabName.ExportedOrder","@TabName.CompletedOrder"],
-         field: 'description', caption: '@captions.description', size: '10%',
-      },
-      {
-         tabs: ["@TabName.CompletedOrder"],
-         field: 'completeddate', caption: '@captions.createdDate', size: '10%'
-      },
-      {
-         tabs: ["@TabName.CanceledOrder"],
-         field: 'description', caption: '@captions.cancelDescription', size: '10%',
-      },
+      { field: 'id', caption: 'Mã đơn hàng', size: '20%' },
+      { field: 'createddate', caption: 'Ngày tạo', size: '10%' },
+      { field: 'receivername', caption: 'Tên người nhận', size: '10%' },
+      { field: 'deliveryaddress', caption: 'Địa chỉ giao hàng', size: '20%' },
+      { field: 'receiverphonenumber', caption: 'Số điện thoại', size: '10%' },
+      { field: 'description', caption: 'Ghi chú', size: '30%' }
    ];
 
    var _records = [
-      @{ var recordFields = new string[10]; }
+      @{ var recordFields = new string[6]; }
       @foreach (var item in Model.Orders)
       {
          recordFields[0] = "id:" + $" '{ item.Id }' ";
+         recordFields[4] = "createddate:" + $" '{ item.CreatedDate }' ";
          recordFields[1] = "receivername:" + $" '{ item.ReceiverName }' ";
          recordFields[2] = "deliveryaddress:" + $" '{ item.DeliveryAddress }' ";
-         recordFields[3] = "completeddate:" + $" '{ item.CompletedDate }' ";
-         recordFields[4] = "receiverphonenumber:" + $" '{ item.ReceiverPhoneNumber }' ";
-         recordFields[6] = "createddate:" + $" '{ item.ExpectedDeliveryDate }' ";
-         recordFields[6] = "completeddate:" + $" '{ item.ExpectedDeliveryDate }' ";
-         recordFields[8] = "expecteddeliverydate:" + $" '{ item.ExpectedDeliveryDate }' ";
-         recordFields[8] = "orderstatus:" + $" '{ item.OrderStatus.Value }' ";
-         recordFields[9] = "description:" + $" '{ item.Description }' ";
+         recordFields[3] = "receiverphonenumber:" + $" '{ item.ReceiverPhoneNumber }' ";
+         recordFields[5] = "description:" + $" '{ item.Description }' ";
 
          @Html.Raw("{ " + String.Join(',', recordFields) + " }," );
       }
@@ -266,6 +163,8 @@
       onRender: function (e) {
          e.onComplete = function () {
             this.refresh();
+            hideScripts();
+            extendQuery();
          }
       }
    });
@@ -273,10 +172,7 @@
 
 <!-- /* RENDER GRID PAGINATION  */-->
 <script hide>
-   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
-   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
-   PAGINATION.init();
-
+   
    $().w2layout({
       name: '_pagination',
       panels: [
@@ -292,7 +188,17 @@
                    })
                </div>`,
          },
-      ]
+      ],
+      onRender: function (e) {
+         e.onComplete = function () {
+            _w2uiPagination({
+               container: '#w2ui-pagination',
+               pageSize: @Model.PageSize,
+               currentPage: @Model.CurrentPage,
+               totalItems: @Model.TotalItems,
+            });
+         }
+      }
    });
 </script>
 
@@ -301,16 +207,7 @@
    $().w2layout({
       name: '_order_index',
       panels: [
-         { type: 'top', size: 30, style: panelStyle },     // tabs,
          { type: 'main' },    // product listview
-      ]
-   });
-
-   $().w2layout({
-      name: '_order_index_top',
-      panels: [
-         { type: 'left', size: '70%' },     // tabs,
-         { type: 'right', size: '30%' },    // tab controls
       ]
    });
 
@@ -331,15 +228,10 @@
       ]
    });
 
-   w2ui['_order_index_top'].content('left', w2ui['_tabs']);
-   w2ui['_order_index_top'].content('right', w2ui['_tab_toolbar']);
-
    w2ui['_order_index_main'].content('top', w2ui['_toolbar']);
-
    w2ui['_order_index_main'].content('main', w2ui['_grid']);
    w2ui['_order_index_main'].content('bottom', w2ui['_pagination']);
 
-   w2ui['_order_index'].content('top', w2ui['_order_index_top']);
    w2ui['_order_index'].content('main', w2ui['_order_index_main']);
 
    w2ui['_main_content'].content('main', w2ui['_order_index']);

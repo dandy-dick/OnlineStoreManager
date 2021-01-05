@@ -40,15 +40,15 @@ namespace OnlineStoreManager.Repository
         public List<Order> Orders()
         {
             using var db = new EcomContext();
-            return db.Orders.Include(p => p.OrderStatus).ToList();
+            return db.Orders.ToList();
         }
 
-        public List<ImportOrder> ImportOrders()
-        {
-            using var db = new EcomContext();
-            return db.ImportOrders
-                .Include(p => p.ImportStatus).ToList();
-        }
+        //public List<ImportOrder> ImportOrders()
+        //{
+        //    using var db = new EcomContext();
+        //    return db.ImportOrders
+        //        .Include(p => p.ImportStatus).ToList();
+        //}
 
         public Result DeleteAll<TTable>(int[] ids) where TTable: class, new()
         {

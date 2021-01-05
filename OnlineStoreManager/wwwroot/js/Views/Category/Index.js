@@ -42,11 +42,6 @@ const CATEGORY_PAGE = {
                 buttons: $(buttons).wrap('<div></div>').parent().html(),
                 onOpen: function (event) {
                     event.onComplete = function () {
-                        var options = w2uiFormFromHtml(requestModifyForm, formName);
-                        debugger
-                        // set form records
-                        $(`#${formName}`).w2form(options);
-                        $(`#w2ui-popup #${formName}`).w2render(formName);
                     }
                 }
             });
@@ -113,10 +108,9 @@ const CATEGORY_PAGE = {
             this.setDeletionContent()
     },
     add: function () {
-        var recs = w2ui['modify_form'].record;
         var category = {
-            name: recs.name,
-            description: recs.description,
+            name: $('input[name="name"]').val(),
+            description: $('textarea[name="description"]').val(),
         };
         $.post('/Category/Add', {
             action: 'Insert', // harcode Repository.CRUD
@@ -129,11 +123,10 @@ const CATEGORY_PAGE = {
         })
     },
     edit: function () {
-        var recs = w2ui['modify_form'].record;
         var category = {
-            id: recs.id,
-            name: recs.name,
-            description: recs.description,
+            id: $('input[name="id"]').val(),
+            name: $('input[name="name"]').val(),
+            description: $('textarea[name="description"]').val(),
         };
         $.post('/Category/Update', {
             action: 'Update', // harcode Repository.CRUD
@@ -154,12 +147,18 @@ const CATEGORY_PAGE = {
                 return deleteids.find(id => id != value.id);
             })
 
-            w2ui['_grid'].record = recs;
-            w2ui['_grid'].refresh();
+            window.location.reload();
 
         });
     },
-    showModificationValidation: function (validation) {
-        debugger;
+    showModificationValidation: function (validations) {
+        for (var key in validations) {
+            if (validations[key].state == 'invalid') {
+                var el = $(`.validation[for="${key}"]`)
+
+                $(el).parent('.field').addClass('invalid');
+                $(el).html(validations[key].errorMessages);
+            }
+        }
     },
 }

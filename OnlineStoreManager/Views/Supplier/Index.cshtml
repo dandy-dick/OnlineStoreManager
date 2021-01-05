@@ -9,7 +9,7 @@
       style: 'display:flex;align-items:center;',
       tabs: [
          { id: '@TabName.Product', text: '@PageMaster.GetTabName(TabName.Product)' },
-         { id: '@TabName.Category', text: '@PageMaster.GetTabName(TabName.Category)' },
+         { id: '@TabName.Supplier', text: '@PageMaster.GetTabName(TabName.Supplier)' },
          { id: '@TabName.Supplier', text: '@PageMaster.GetTabName(TabName.Supplier)' },
       ],
       onClick: function (event) {
@@ -110,9 +110,9 @@
    var _columns = [
       // Product Tab Grid Columns
       { field: 'id', caption: 'ID', size: '5%'},
-      // Category Tab Grid Columns
-      { field: 'name', caption: 'Tên danh mục', size: '30%', tabs: ["@TabName.Supplier"]},
-      { field: 'description', caption: 'Mô tả', size: '65%', tabs: ["@TabName.Supplier"]},
+      // Supplier Tab Grid Columns
+      { field: 'name', caption: 'Tên nhà cung cấp', size: '30%'},
+      { field: 'description', caption: 'Mô tả', size: '65%'},
    ];
 
    var _records = [
@@ -144,6 +144,8 @@
       onRender: function (e) {
          e.onComplete = function () {
             this.refresh();
+            hideScripts();
+            extendQuery();
          }
       }
    });
@@ -151,10 +153,7 @@
 
 <!-- /* RENDER GRID PAGINATION  */-->
 <script hide>
-   var currentPage = @Model.CurrentPage, totalItems = @Model.TotalItems, pageSize = @Model.PageSize;
-   const PAGINATION = _w2uiPagination(currentPage, totalItems, pageSize);
-   PAGINATION.init();
-
+  
    $().w2layout({
       name: '_pagination',
       panels: [
@@ -170,7 +169,17 @@
                    })
                </div>`,
          },
-      ]
+      ],
+      onRender: function (e) {
+         e.onComplete = function () {
+            _w2uiPagination({
+               container: '#w2ui-pagination',
+               pageSize: @Model.PageSize,
+               currentPage: @Model.CurrentPage,
+               totalItems: @Model.TotalItems,
+            });
+         }
+      }
    });
 </script>
 
