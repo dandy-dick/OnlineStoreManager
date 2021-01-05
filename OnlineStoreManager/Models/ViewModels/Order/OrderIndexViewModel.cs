@@ -12,6 +12,9 @@ namespace OnlineStoreManager.Models.ViewModels
         public int PageSize { get; set; }
         public int TotalItems { get; set; }
 
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+
         public IEnumerable<Order> Orders { get; set; }
     }
 }

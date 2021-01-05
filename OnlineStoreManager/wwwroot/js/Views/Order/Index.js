@@ -1,6 +1,41 @@
 ﻿
 const ORDER_PAGE = {
-    setModificationContent(_action) {
+    renderOrderItemsGrid: function () {
+        //
+        var _columns = [
+            { field: 'id', caption: 'Mã sp', size: '10%' },
+            { field: 'name', caption: 'Tên sản phẩm', size: '60%' },
+            {
+                field: 'quantity', caption: 'Số lượng', size: '15%',
+                resizable: false,
+                render: function (rec) {
+
+                }
+                
+            },
+            {
+                field: 'control', caption: '', size: '15%',
+                resizable: false,
+                render: function (rec) {
+
+                }
+            },
+        ];
+
+        $('#order-items').w2grid({
+            name: '_order_items_grid',
+            recid: 'id',
+            columns: _columns,
+            records: [],
+            onRender: function (e) {
+                e.onComplete = function () {
+                    this.refresh();
+                }
+            }
+        });
+
+    },
+    setModificationContent:function (_action) {
         // request form content
         // vi validation phia server
         var orderId = w2ui['_grid'].getSelection()[0];
@@ -36,17 +71,14 @@ const ORDER_PAGE = {
                 title: `Đơn hàng Ecommerce - ${title}`,
                 modal: true,
                 showClose: true,
-                width: 350,
-                height: 400,
+                width: 1000,
+                height: 800,
                 body: `<div id="${formName}" style="${popupContentStyle}"> ${requestModifyForm} </div>`,
                 buttons: $(buttons).wrap('<div></div>').parent().html(),
                 onOpen: function (event) {
                     event.onComplete = function () {
-                        var options = w2uiFormFromHtml(requestModifyForm, formName);
-                        debugger
-                        // set form records
-                        $(`#${formName}`).w2form(options);
-                        $(`#w2ui-popup #${formName}`).w2render(formName);
+
+                        that.renderOrderItemsGrid();
                     }
                 }
             });
@@ -111,6 +143,12 @@ const ORDER_PAGE = {
     onDelete: function () {
         if (w2ui['_grid'].getSelection().length)
             this.setDeletionContent()
+    },
+    onSelectDate:function() {
+        var fromDate = $('input[name="FromDate"]').val(),
+            toDate = $('input[name="ToDate"]').val();
+        window.location.search = "";
+        window.location.search = `?FromDate=${fromDate}&ToDate=${toDate}`;
     },
     add: function () {
         var recs = w2ui['modify_form'].record;

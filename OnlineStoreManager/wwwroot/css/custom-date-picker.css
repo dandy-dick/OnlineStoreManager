@@ -1,0 +1,26 @@
+﻿input[type="date"] {
+    position: relative;
+}
+
+    input[type="date"]:before {
+        position: absolute;
+        top: 7px;
+        left: 10px;
+        content: attr(data-date);
+        display: inline-block;
+        color: black;
+        font-weight:bold;
+        font-size:14px; 
+    }
+
+    input::-webkit-datetime-edit, input::-webkit-inner-spin-button, input::-webkit-clear-button {
+        display: none;
+    }
+
+    input::-webkit-calendar-picker-indicator {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        color: black;
+        opacity: 1;
+    }

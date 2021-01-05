@@ -12,7 +12,7 @@
       {
          type: 'html',
          html: function (item) {
-            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"`
+            return `<button class="_small_btn"`
                + `      style="${toolbarItemStyle}" `
                + `      onclick="ORDER_PAGE.onAdd()">`
                + `      <img class="small_icon" src="/icons/add.svg"/>`
@@ -23,7 +23,7 @@
       {
          type: 'html',
          html: () => {
-            return `<button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "")"
+            return `<button class="_small_btn"
                   style="${toolbarItemStyle}"
                   onclick="ORDER_PAGE.onDelete()">
                   <img class="small_icon" src="/icons/cancel.svg"/>
@@ -35,7 +35,7 @@
          type: 'html',
          html: function (item) {
             return `
-                  <button class="_small_btn @(ViewBag.TabName != TabName.PaidOrder ? "disable" : "" )"
+                  <button class="_small_btn"
                      style="${toolbarItemStyle}"
                      onclick="ORDER_PAGE.onEdit()">
                      <img class="small_icon" src="/icons/pen.svg"/>
@@ -49,25 +49,36 @@
       },
       {
          type: 'html',
-         html: function (item) {
+         html: function () {
+            var inpStyle = `margin: 0 3.5px;height: 28px!important;
+               border: 1px solid #c5c5c5;border-radius: 4px;background-color:#f9f9f9;
+               font-weight: bold;font-size: 13px;width:160px;`;
             return `
-                  <button class="_small_btn" style="${toolbarItemStyle}">
-                     <img class="small_icon" src="/icons/calendar.svg"/>
-                     <span class="bold_span"> Từ: </span>
-                     <span> 23/4/2020 </span>
-                  </button>`;
+                  <input name="FromDate" type="date" style="${inpStyle}"
+                     data-date="Từ: chưa chọn" />
+            `;
          }
       },
       {
          type: 'html',
          html: function (item) {
+            var inpStyle = `margin: 0 3.5px;height: 28px!important;
+               border: 1px solid #c5c5c5;border-radius: 4px;background-color:#f9f9f9;
+               font-weight: bold;font-size: 13px;width:160px;`;
             return `
-                  <button class="_small_btn" style="${toolbarItemStyle}">
-                     <img class="small_icon" src="/icons/calendar.svg"/>
-                     <span class="bold_span"> Đến: </span>
-                     <span> 23/4/2020 </span>
-                  </button>`;
+                  <input name="ToDate" type="date" style="${inpStyle}" 
+                     data-date="Đến: chưa chọn"/>`;
          }
+      },
+      {
+         type: 'html',
+         html: function () {
+            return `
+                  <button class="_small_btn"
+                     style="${toolbarItemStyle}"
+                     onclick="ORDER_PAGE.onSelectDate()">Lọc
+                  </button>`;
+         },
       },
       {
          type: 'break',
@@ -80,7 +91,7 @@
                   <input class="toolbar_input" type="text"
                      extend_query="SearchText" submit_on_keypress
                      placeholder="Tìm kiếm ... "
-                     style="padding-right: 30px; width: 150px; ${toolbarItemStyle}"/>`;
+                     style="border-radius:4px;padding-right: 30px; width: 150px; ${toolbarItemStyle}"/>`;
          }
       },
       {
@@ -101,7 +112,7 @@
          html: function (item) {
             return `
                   <button class="_small_btn" style="${toolbarItemStyle}"
-                     onclick="window.location.replace(@ViewBag.TabName)">
+                     onclick="window.location.replace('/@ViewBag.TabName')">
                      <img class="small_icon" src="/icons/reload.svg"/>
                      Tải lại </button>`;
          }
@@ -115,7 +126,77 @@
          if (p.tabs)
             return p.tabs.find(p => p == '@ViewBag.TabName')
          return true;      // neu khong dinh nghia p.tabs, mac dinh la lay cho tat ca
-      })
+      }),
+      onRender: function (e) {
+         e.onComplete = function () {
+            // date picker
+            function formatDate(date) {
+               date = new Date(date);
+               var dd = date.getDate();
+               var mm = date.getMonth() + 1; //January is 0!
+               var yyyy = date.getFullYear();
+               if (dd < 10)
+                  dd = '0' + dd
+               if (mm < 10)
+                  mm = '0' + mm
+               return dd + '-' + mm + '-' + yyyy;
+            }
+
+            var _fromDate = '@Model.FromDate',_toDate = '@Model.ToDate';
+            // assign default value
+            //
+            $('input[name="FromDate"]').val(_fromDate);
+            $('input[name="ToDate"]').val(_toDate);
+            if (_fromDate) {
+               $('input[name="FromDate"]')
+                  .attr('data-date', 'Từ: ' + formatDate(_fromDate));
+            }
+            $('input[name="ToDate"]')
+               .attr('data-date', 'Đến: ' + formatDate(_toDate));
+            // set options
+            //
+            $('input[name="FromDate"]').attr('max', formatDate(new Date()));
+            $('input[name="ToDate"]').attr('max', formatDate(new Date()));
+            // handle events
+            $('input[name="FromDate"]').change(function (e) {
+
+               var fromDate = $('input[name="FromDate"]').val(),
+                  toDate = $('input[name="ToDate"]').val();
+
+               if (!fromDate)
+                  return;
+
+               $('input[name="FromDate"]')
+                  .attr('data-date', 'Từ: ' + formatDate(fromDate));
+
+               debugger
+               // nếu đã chọn toDate và toDate lại bé hơn toDate
+               if (toDate && fromDate > toDate) {
+                  $('input[name="ToDate"]').val(fromDate);
+                  $('input[name="ToDate"]')
+                     .attr('data-date', 'Đến: ' + formatDate(fromDate));
+               }
+            });
+            $('input[name="ToDate"]').change(function (e) {
+               var fromDate = $('input[name="FromDate"]').val(),
+                  toDate = $('input[name="ToDate"]').val();
+
+               if (!toDate)
+                  return;
+
+               $('input[name="ToDate"]')
+                  .attr('data-date', 'Đến: ' + formatDate(toDate));
+
+               debugger
+               // nếu đã chọn fromDate và fromDate lại lớn hơn toDate
+               if (fromDate && toDate < fromDate) {
+                  $('input[name="FromDate"]').val(toDate);
+                  $('input[name="FromDate"]')
+                     .attr('data-date', 'Từ: ' + formatDate(toDate));
+               }
+            });
+         }
+      }
    });
 </script>
 

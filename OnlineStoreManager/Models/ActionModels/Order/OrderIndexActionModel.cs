@@ -16,6 +16,10 @@ namespace OnlineStoreManager.Models.ViewModels
         public int PageSize { get; set; } = 20;
         public int TotalItems { get; set; } = 0;
 
+        public string FromDate { get; set; }
+        public string ToDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+
+
         public IEnumerable<Order> Orders { get; set; }
 
         public dynamic Execute()
@@ -23,11 +27,12 @@ namespace OnlineStoreManager.Models.ViewModels
             // Truy xuất dữ liệu từ Database
             //
             var repo = new OrderIndexRepository();
+            repo.ObjectAssign(this);
             repo.Execute();
-            this.ObjectAssign(repo);
-
+            this.Orders = repo.Orders;
+            // Pagination & Search
+            //
             this.SetModelData();    
-            
             //  Trả về data cho ViewModel
             //
             var viewModel = new OrderIndexViewModel();

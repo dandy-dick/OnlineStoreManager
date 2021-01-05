@@ -1,1 +1,87 @@
-﻿
+﻿@using OnlineStoreManager.Infracstructure;
+@using OnlineStoreManager.Database.Models;
+@using OnlineStoreManager.Repository;
+@model OnlineStoreManager.Models.ViewModels.OrderModifyViewModel
+@{ Layout = null; }
+@{
+    Order formValues = new Order();
+    List<OrderItem> orderItems = new List<OrderItem>();
+    if (Model.Action == CRUD.Update)
+    {
+       formValues.AssignProperties(Model.Order);
+       orderItems = Model.OrderItems;
+    }
+}
+
+<div class="flex">
+   <div style="padding: 1rem;
+      background-color: white;
+      border-radius: 8px;
+      transform: scale(0.95);
+   ">
+      <div class="form-container" style="width:400px;">
+         <div class="field-set">
+            <div class="field">
+               <label> Mã đơn hàng: </label>
+               <input type="text" disabled name="id" value="@formValues.Id" />
+            </div>
+
+            <div class="field ">
+               <label> Ngày tạo: </label>
+               <input type="text" disable value="@formValues.CreatedDate" />
+            </div>
+         </div>
+
+         <div class="field-set">
+            <div class="field ">
+               <label> Họ và tên: </label>
+               <input type="number" name="cost" value="@formValues.ReceiverName" />
+               <span class="validation" for="RequestProduct.Cost"></span>
+            </div>
+            <div class="field ">
+               <label> Số điện thoại: </label>
+               <input type="number" name="cost" value="@formValues.ReceiverPhoneNumber" />
+               <span class="validation" for="RequestProduct.Cost"></span>
+            </div>
+         </div>
+
+         <div class="field-set">
+            <div class="field ">
+               <label> Địa chỉ: </label>
+               <input type="number" name="cost" value="@formValues.DeliveryAddress" />
+               <span class="validation" for="RequestProduct.Cost"></span>
+            </div>
+         </div>
+
+         <div class="field-set">
+            <div class="field">
+               <label> Mô tả: </label>
+               <textarea type="number" rows="4"
+                         name="description">@formValues.Description</textarea>
+            </div>
+         </div>
+      </div>
+   </div>
+   
+
+   <div style="padding:2rem;">
+      <div class="form-container" style="padding:0;width:500px;transform:scale(0.95);">
+         <div class="field-set flex align-end">
+            <div class="field" style="position:relative;">
+               <label> Tên sản phẩm: </label>
+               <input type="text" placeholder="Nhập để tìm kiếm ... " />
+            </div>
+            <div class="field" style="width:80px;">
+               <label> Số lượng: </label>
+               <input type="number" value="1"/>
+            </div>
+            <div class="field">
+               <label></label>
+               <input type="submit" name="name" value="Thêm" style="padding: 0.5rem 1rem;"/>
+            </div>
+         </div>
+      </div>
+      <div id="order-items" style="margin:1rem 0;width:500px;min-height:300px"></div>
+   </div>
+</div>
+
