@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,11 +16,14 @@ namespace OnlineStoreManager.Controllers
 {
     public class ProductController : AppController
     {
-        readonly IPageMaster PageMaster;
-        public ProductController(IPageMaster _pageMaster)
-        {
-            this.PageMaster = _pageMaster;
+        readonly IPageMaster _pageMaster;
+        readonly IWebHostEnvironment _hostingEnvironment;
 
+
+        public ProductController(IPageMaster _pageMaster, IWebHostEnvironment hostingEnvironment)
+        {
+            this._pageMaster = _pageMaster;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [Route("")]
@@ -26,7 +31,7 @@ namespace OnlineStoreManager.Controllers
         public IActionResult Index(ProductIndexActionModel model)
         {
             model.TabName = TabName.Product;
-            PageMaster.SetTabName(model.TabName);
+            _pageMaster.SetTabName(model.TabName);
 
             var viewModel = model.Execute();
             ViewBag.TabName = model.TabName;
@@ -39,32 +44,23 @@ namespace OnlineStoreManager.Controllers
             return model.Execute();
         }
 
-
-        //  for validations 
-        //
         [HttpPost]
         public IActionResult Modify(ProductModifyActionModel model)
         {
+            ViewBag.ModelStateDictionary = this.ModelStateDictionary<ProductModifyActionModel>();
             return View(model.Execute());
         }
 
         [HttpPost]
-        public dynamic Add(ProductAddActionModel model)
+        public async Task<Result> Update(ProductUpdateActionModel model)
         {
             if (ModelState.IsValid)
-               return model.Execute();
+            {
+                model.RootPath = this._hostingEnvironment.WebRootPath;
+                return await model.Execute();
+            }
 
-            var modelError = GetModelStateDictionary<ProductAddActionModel>();
-            return Result.Fail(null, modelError);
-        }
-
-        [HttpPost]
-        public dynamic Update(ProductUpdateActionModel model)
-        {
-            if (ModelState.IsValid)
-                return model.Execute();
-
-            var modelError = GetModelStateDictionary<ProductAddActionModel>();
+            var modelError = ModelStateDictionary<ProductUpdateActionModel>();
             return Result.Fail(null, modelError);
         }
     }

@@ -21,7 +21,7 @@ namespace OnlineStoreManager.Migrations
 
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -30,6 +30,7 @@ namespace OnlineStoreManager.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -37,132 +38,47 @@ namespace OnlineStoreManager.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.ImportProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("ImportReceiptId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImportReceiptId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ImportProducts");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.ImportReceipt", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("CancelDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("ExpectedDeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ImportStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ImportStatusId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("ImportReceipts");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.ImportStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ImportStatuses");
-                });
-
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("CancelDescription")
+                    b.Property<string>("CreatedDate")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DeliveryAddress")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ExpectedDeliveryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OrderStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("ReceiverName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ReceiverPhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderStatusId");
 
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.OrderProduct", b =>
+            modelBuilder.Entity("OnlineStoreManager.Database.Models.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -174,35 +90,17 @@ namespace OnlineStoreManager.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProducts");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.OrderStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderStatuses");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<double>("Cost")
@@ -211,13 +109,17 @@ namespace OnlineStoreManager.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int>("SupplierId")
+                    b.Property<int?>("SupplierId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -229,34 +131,9 @@ namespace OnlineStoreManager.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.Stock", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("WarehouseId");
-
-                    b.ToTable("Stocks");
-                });
-
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Supplier", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -265,6 +142,7 @@ namespace OnlineStoreManager.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -272,86 +150,15 @@ namespace OnlineStoreManager.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.Warehouse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Warehouses");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.ImportProduct", b =>
-                {
-                    b.HasOne("OnlineStoreManager.Database.Models.ImportReceipt", "ImportReceipt")
-                        .WithMany("ImportProducts")
-                        .HasForeignKey("ImportReceiptId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineStoreManager.Database.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ImportReceipt");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.ImportReceipt", b =>
-                {
-                    b.HasOne("OnlineStoreManager.Database.Models.ImportStatus", "ImportStatus")
-                        .WithMany()
-                        .HasForeignKey("ImportStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineStoreManager.Database.Models.Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ImportStatus");
-
-                    b.Navigation("Warehouse");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.Order", b =>
-                {
-                    b.HasOne("OnlineStoreManager.Database.Models.OrderStatus", "OrderStatus")
-                        .WithMany()
-                        .HasForeignKey("OrderStatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderStatus");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.OrderProduct", b =>
+            modelBuilder.Entity("OnlineStoreManager.Database.Models.OrderItem", b =>
                 {
                     b.HasOne("OnlineStoreManager.Database.Models.Order", "Order")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId");
 
                     b.HasOne("OnlineStoreManager.Database.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("Order");
 
@@ -362,38 +169,15 @@ namespace OnlineStoreManager.Migrations
                 {
                     b.HasOne("OnlineStoreManager.Database.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("OnlineStoreManager.Database.Models.Supplier", "Supplier")
                         .WithMany("Products")
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SupplierId");
 
                     b.Navigation("Category");
 
                     b.Navigation("Supplier");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.Stock", b =>
-                {
-                    b.HasOne("OnlineStoreManager.Database.Models.Product", "Product")
-                        .WithMany("Stocks")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineStoreManager.Database.Models.Warehouse", "Warehouse")
-                        .WithMany("Stocks")
-                        .HasForeignKey("WarehouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Category", b =>
@@ -401,29 +185,14 @@ namespace OnlineStoreManager.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.ImportReceipt", b =>
-                {
-                    b.Navigation("ImportProducts");
-                });
-
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Order", b =>
                 {
-                    b.Navigation("OrderProducts");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.Product", b =>
-                {
-                    b.Navigation("Stocks");
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("OnlineStoreManager.Database.Models.Supplier", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("OnlineStoreManager.Database.Models.Warehouse", b =>
-                {
-                    b.Navigation("Stocks");
                 });
 #pragma warning restore 612, 618
         }

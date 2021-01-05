@@ -1,16 +1,16 @@
 ﻿
 const PRODUCT_PAGE = {
     setModificationContent(_action) {
-        // request form content
-        // vi validation phia server
         var productId = w2ui['_grid'].getSelection()[0];
-        if (_action == 'Update' && !productId)
+        if (_action == 'Update' && !productId) {
+            alert('Bạn chưa chọn dòng nào cả');
             return;
+        }
 
         var data = {
             action: _action,       // hardcode enum Repository.CRUD
             product: {
-                id: _action == 'Update' ? productId : null,// get product ID if action is update
+                id: productId
             }
         };
 
@@ -31,32 +31,39 @@ const PRODUCT_PAGE = {
 
             // render popup
             var formName = 'modify_form';
-            var popupContentStyle = `display:flex;flex-direction:column;padding: 1rem;`;
             w2popup.open({
                 title: `Sản phẩm - ${title}`,
                 modal: true,
                 showClose: true,
-                width: 350,
-                height: 400,
-                body: `<div id="${formName}" style="${popupContentStyle}"> ${requestModifyForm} </div>`,
+                width: 650,
+                height: 530,
+                body: `<div id="${formName}" style="padding-bottom:1rem 0;width:100%;height:100%;"> 
+                            ${requestModifyForm} </div>`,
                 buttons: $(buttons).wrap('<div></div>').parent().html(),
                 onOpen: function (event) {
                     event.onComplete = function () {
-                        var options = w2uiFormFromHtml(requestModifyForm, formName);
-                        // set form records
-                        $(`#${formName}`).w2form(options);
-                        $(`#w2ui-popup #${formName}`).w2render(formName);
+                        // auto-completes
+                        $.post('/Category/GetList', null, function (res) {
+                            autocomplete(
+                                document.getElementById('categoryname'),
+                                res.records
+                            );
+                        });
+
+                        $.post('/Supplier/GetList', null, function (res) {
+                            autocomplete(
+                                document.getElementById('suppliername'),
+                                res.records
+                            );
+                        });
                     }
-                }
+                },
             });
             // assign event, because element was not yet added to DOM
             $('#popup_confirm').click(e => {
-                if (_action == 'Update')
-                    that.edit()
-                else
-                    that.add()
-            })
-            $('#popup_abort').click(e => w2popup.close())
+                that.submit(_action);
+            });
+            $('#popup_abort').click(e => w2popup.close());
         });
     },
     setDeletionContent() {
@@ -110,46 +117,42 @@ const PRODUCT_PAGE = {
         if (w2ui['_grid'].getSelection().length)
             this.setDeletionContent()
     },
-    add: function () {
-        var recs = w2ui['modify_form'].record;
-        var product = {
-            name: recs.name,
-            cost: recs.cost,
-            price: recs.price,
-            categoryid: recs.categoryid ? recs.categoryid.id: null,
-            supplierid: recs.supplierid ? recs.supplierid.id: null,
-            description: recs.description,
-        };
-        $.post('/Product/Add', {
-            action: 'Insert', // harcode Repository.CRUD
-            product: product
-        }, (result) => {
-            if (result.isSuccess == true)
-                    window.location.reload();
-            // model state errors validation
-            this.showModificationValidation(result.data);
-        })
-    },
-    edit: function () {
-        var recs = w2ui['modify_form'].record;
-        var product = {
-            id: recs.id,
-            name: recs.name,
-            cost: recs.cost,
-            price: recs.price,
-            categoryid: recs.categoryid ? recs.categoryid.id : null,
-            supplierid: recs.supplierid ? recs.supplierid.id : null,
-            description: recs.description,
-        };
-        $.post('/Product/Update', {
-            action: 'Update', // harcode Repository.CRUD
-            product: product
-        }, (result) => {
+    submit: function (_action) {
+        var photoFile = $('input[name="photo"]').prop('files')[0];
+        var data = {
+            'action': _action,
+            'formfile': photoFile,
+            'requestproduct.id': $('input[name="id"]').val(),
+            'requestproduct.name': $('input[name="name"]').val(),
+            'requestproduct.cost': $('input[name="cost"]').val(),
+            'requestproduct.price': $('input[name="price"]').val(),
+            'requestproduct.categoryname': $('input[name="categoryname"]').val(),
+            'requestproduct.suppliername': $('input[name="suppliername"]').val(),
+            'requestproduct.description': $('input[name="description"]').val() ?? '',
+        }
+        if (_action == 'Insert')
+            delete data['requestproduct.id'];
+
+        var _formData = new FormData();
+        for (let key in data) {
+            _formData.append(key, data[key]);
+        }
+
+        var that = this;
+        $.ajax({
+            url: '/Product/Update',
+            type: 'POST',
+            data: _formData,
+            cache: false,
+            contentType: false,
+            processData: false
+        }).done(function (result) {
+            debugger;
             if (result.isSuccess == true)
                 window.location.reload();
             // model state errors validation
-            this.showModificationValidation(result.data);
-        })
+            that.showValidation(result.data);
+        });
     },
     delete: function () {
         var deleteids = w2ui['_grid'].getSelection();
@@ -163,10 +166,18 @@ const PRODUCT_PAGE = {
 
             w2ui['_grid'].record = recs;
             w2ui['_grid'].refresh();
-            w2popup.close();
+
+            window.location.reload();
         });
     },
-    showModificationValidation: function (validation) {
-        debugger;
+    showValidation: function (validations) {
+        for (var key in validations) {
+            if (validations[key].state == 'invalid') {
+                var el = $(`.validation[for="${key}"]`)
+
+                $(el).parent('.field').addClass('invalid');
+                $(el).html(validations[key].errorMessages);
+            }
+        }
     },
 }

@@ -18,7 +18,6 @@ namespace OnlineStoreManager.Controllers
         public SupplierController(IPageMaster _pageMaster)
         {
             this.PageMaster = _pageMaster;
-
         }
 
         [Route("/Supplier")]
@@ -33,18 +32,14 @@ namespace OnlineStoreManager.Controllers
         }
 
         [HttpPost]
-        public bool Delete(SupplierDeleteActionModel model)
+        public Result Delete(SupplierDeleteActionModel model)
         {
             return model.Execute();
         }
 
-
-        //  for validations 
-        //
         [HttpPost]
         public IActionResult Modify(SupplierModifyActionModel model)
         {
-
             return View(model.Execute());
         }
 
@@ -54,7 +49,7 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<SupplierAddActionModel>();
+            var modelError = ModelStateDictionary<SupplierAddActionModel>();
             return Result.Fail(null, modelError);
         }
 
@@ -64,20 +59,16 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<SupplierAddActionModel>();
+            var modelError = ModelStateDictionary<SupplierAddActionModel>();
             return Result.Fail(null, modelError);
         }
 
-        public dynamic GetList(string request)
+        public dynamic GetList()
         {
-            var obj = JsonConvert.DeserializeObject<GetListRequestModel>(request);
             var model = new SupplierGetListActionModel();
-            model.ObjectAssign(obj);
-
             var result = model.Execute();
             return new
             {
-                status = "success",
                 records = result
             };
         }

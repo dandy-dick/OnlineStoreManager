@@ -12,7 +12,7 @@ namespace OnlineStoreManager.Infracstructure
 {
     public class ModelStateError
     {
-        public string State { get; private set; } = "invalid";
+        public string State { get; private set; }
         public string ErrorMessages { get; set; }
 
         public void SetState(ModelValidationState state)
@@ -30,6 +30,11 @@ namespace OnlineStoreManager.Infracstructure
                     break;
             }
         }
+
+        public bool InValid()
+        {
+            return State == "invalid";
+        }
     }
 
     public class AppController : Controller
@@ -38,18 +43,20 @@ namespace OnlineStoreManager.Infracstructure
         {
         }
 
-        /* Để custom validation thôi */
-        public Dictionary<string, ModelStateError> GetModelStateDictionary<TModel>()
+        /* Để custom validation */
+        public Dictionary<string, ModelStateError> ModelStateDictionary<TModel>()
         {
             var result = new Dictionary<string, ModelStateError>();
             foreach (var item in ModelState)
             {
                 var errorMessages = item.Value.Errors
                     .Select(p => "-" + p.ErrorMessage)
-                    .ToArray<string>();
+                    .ToArray();
 
-                var error = new ModelStateError();
-                error.ErrorMessages = String.Join("<br>", errorMessages);
+                var error = new ModelStateError
+                {
+                    ErrorMessages = String.Join("\n", errorMessages)
+                };
                 error.SetState(item.Value.ValidationState);
 
                 result.Add(item.Key, error);

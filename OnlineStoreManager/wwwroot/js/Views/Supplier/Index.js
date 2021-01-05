@@ -4,7 +4,7 @@ const SUPPLIER_PAGE = {
         // request form content
         // vi validation phia server
         var supplierId = w2ui['_grid'].getSelection()[0];
-        if (!supplierId)
+        if (_action == 'Update' && !supplierId)
             return;
 
         var data = {
@@ -33,7 +33,7 @@ const SUPPLIER_PAGE = {
             var formName = 'modify_form';
             var popupContentStyle = `display:flex;flex-direction:column;padding: 1rem;`;
             w2popup.open({
-                title: `Nhà cung cấp - ${title}`,
+                title: `Danh mục - ${title}`,
                 modal: true,
                 showClose: true,
                 width: 350,
@@ -42,11 +42,6 @@ const SUPPLIER_PAGE = {
                 buttons: $(buttons).wrap('<div></div>').parent().html(),
                 onOpen: function (event) {
                     event.onComplete = function () {
-                        var options = w2uiFormFromHtml(requestModifyForm, formName);
-                        debugger
-                        // set form records
-                        $(`#${formName}`).w2form(options);
-                        $(`#w2ui-popup #${formName}`).w2render(formName);
                     }
                 }
             });
@@ -102,6 +97,7 @@ const SUPPLIER_PAGE = {
         $('#popup_abort').click(e => w2popup.close())
     },
     onAdd: function () {
+        debugger
         this.setModificationContent('Insert');
     },
     onEdit: function () {
@@ -112,10 +108,9 @@ const SUPPLIER_PAGE = {
             this.setDeletionContent()
     },
     add: function () {
-        var recs = w2ui['modify_form'].record;
         var supplier = {
-            name: recs.name,
-            description: recs.description,
+            name: $('input[name="name"]').val(),
+            description: $('textarea[name="description"]').val(),
         };
         $.post('/Supplier/Add', {
             action: 'Insert', // harcode Repository.CRUD
@@ -128,11 +123,10 @@ const SUPPLIER_PAGE = {
         })
     },
     edit: function () {
-        var recs = w2ui['modify_form'].record;
         var supplier = {
-            id: recs.id,
-            name: recs.name,
-            description: recs.description,
+            id: $('input[name="id"]').val(),
+            name: $('input[name="name"]').val(),
+            description: $('textarea[name="description"]').val(),
         };
         $.post('/Supplier/Update', {
             action: 'Update', // harcode Repository.CRUD
@@ -153,11 +147,20 @@ const SUPPLIER_PAGE = {
                 return deleteids.find(id => id != value.id);
             })
 
-            w2ui['_grid'].record = recs;
-            w2ui['_grid'].refresh();
+            window.location.reload();
+
         });
     },
-    showModificationValidation: function (validation) {
+    showModificationValidation: function (validations) {
         debugger;
+
+        for (var key in validations) {
+            if (validations[key].state == 'invalid') {
+                var el = $(`.validation[for="${key}"]`)
+
+                $(el).parent('.field').addClass('invalid');
+                $(el).html(validations[key].errorMessages);
+            }
+        }
     },
 }

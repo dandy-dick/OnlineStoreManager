@@ -5,37 +5,37 @@
 @model OnlineStoreManager.Models.ViewModels.CategoryModifyViewModel
 @{ Layout = null; }
 @{
-   Category p = new Category();
-   string idLabel = (string)p.GetPropertyAttributeValue
-       <Category, DisplayAttribute>("Id", "Name"),
-      nameLabel = (string)p.GetPropertyAttributeValue
-         <Category, DisplayAttribute>("Name", "Name"),
-      descriptionLabel = (string)p.GetPropertyAttributeValue
-         <Category, DisplayAttribute>("Description", "Name");
-
    Category formValues = new Category();
    if (Model.Action == CRUD.Update)
    {
       formValues.AssignProperties(Model.Category);
    }
 }
-@*truyền options cho từng input để tạo w2ui form (render tại client)*@
 
-<div class="w2ui-field">
-   <label>@idLabel</label>
-   <div> <input w2field="text" value="@formValues.Id" name="id" /> </div>
-</div>
+<div class="form-container" style="background-color:#fafafa">
+   @if (formValues.Id != null)
+   {
+      <div class="field-set">
+         <div class="field">
+            <label> Mã danh mục: </label>
+            <input type="text" disabled value="@formValues.Id" name="id" />
+         </div>
+      </div>
+   }
+   <div class="field-set">
+      <div class="field ">
+         <label> Tên danh mục: </label>
+         <input type="text" name="name" value="@formValues.Name" />
+         <span class="validation" for="Category.Name"></span>
+      </div>
+   </div>
 
-<div class="w2ui-field">
-   <label>@nameLabel</label>
-   <div> 
-      <input name="name" w2field="text" value="@formValues.Name" /> 
+   <div class="field-set">
+      <div class="field">
+         <label> Mô tả: </label>
+         <textarea type="number" rows="8" name="description">@formValues.Description</textarea>
+      </div>
    </div>
 </div>
 
-<div class="w2ui-field">
-   <label>@descriptionLabel</label>
-   <div> 
-      <input w2field="textarea" value="@formValues.Description" name="description" /> 
-   </div>
-</div>
+

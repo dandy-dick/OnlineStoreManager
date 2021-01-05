@@ -69,7 +69,7 @@ namespace OnlineStoreManager.Infracstructure
                 if (hasProperty)
                 {
                     // check for exclude
-                    var excluded = (string)src.GetPropertyAttributeValue
+                    var excluded = (string)src.PropAttrValue
                                                 <TSource, ExcludeAttribute>(key, "Name");
                     if (excluded == "AssignProperties")  // bo qua 
                         continue;
@@ -86,7 +86,7 @@ namespace OnlineStoreManager.Infracstructure
     Lấy giá trị key từ attribute của một property của object
     property hoặc attr không tồn tại thì throw
  */
-public static object GetPropertyAttributeValue<TSrc,TAttr>(this TSrc src, string propertyName, string attrName)
+public static object PropAttrValue<TSrc,TAttr>(this TSrc src, string propertyName, string attrName)
             where TAttr : class
             where TSrc : class
         {
@@ -139,12 +139,16 @@ public static object GetPropertyAttributeValue<TSrc,TAttr>(this TSrc src, string
                 "ýỳỵỷỹ",
                 "ÝỲỴỶỸ"
             };
-            //Thay thế và lọc dấu từng char      
-            for (int i = 1; i < VietNamChar.Length; i++)
+            //Thay thế và lọc dấu từng char    
+            if (str != null)
             {
-                for (int j = 0; j < VietNamChar[i].Length; j++)
-                    str = str.Replace(VietNamChar[i][j], VietNamChar[0][i - 1]);
+                for (int i = 1; i < VietNamChar.Length; i++)
+                {
+                    for (int j = 0; j < VietNamChar[i].Length; j++)
+                        str = str.Replace(VietNamChar[i][j], VietNamChar[0][i - 1]);
+                }
             }
+
             return str;
         }
     }

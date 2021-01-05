@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+
+    .container {
+      width: 500px;
+      height: 500px;
+      background-color: #fdfdfd;
+      margin: 4rem;
+    }
+    .form-container  {
+      padding: 1rem;
+      overflow-y: scroll;
+    }
+
+    .form-container .field-set {
+      display: flex;
+    }
+
+    .form-container .field-set > .field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-container .field-set .field + .field {
+      margin-left: 1rem;
+    }
+
+    .form-container .field-set + .field-set {
+      margin-top: 1rem;
+    }
+
+    .form-container .field-set .field label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-container .field-set .field input {
+      
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      outline: none;
+      border: 2px solid #d5d5d5;
+      background-color: rgba(0, 0, 0, 0.005);
+    }
+
+    .form-container .field-set .field textarea {
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      outline: none;
+      border: 2px solid #d5d5d5;
+      background-color: rgba(0, 0, 0, 0.005);
+      resize: none;
+    }
+
+    .form-container .field-set .field input:focus {
+      border: 2px solid #8bb7e9;
+    }
+
+    .form-container .field-set .field .validation {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      background-color: rgba(0, 0, 0, 0.05);
+      color: rgb(236, 0, 0);
+      font-size: 0.85rem;
+
+      display: none;
+    }
+    .form-container .field-set .field.invalid .validation {
+      display: block;
+      white-space: pre-line;
+    }
+    .form-container .field-set .field input[type="file"] {
+      display: inline-block;
+      padding: 0;
+      border: none;
+    }
+
+    .form-container .field-set .field .inline-field input{
+      margin-left: 1rem;
+    }
+  
+    .flex {
+      display: flex;
+    }
+
+
+  </style>
+</head>
+<body>
+
+  
+<div class="container form-container">
+  <div class="field-set">
+    <div class="field invalid">
+      <div class="inline-field">
+        <label> Field name: </label>
+        <input type="file" name="name"/>
+      </div>
+      <span class="validation"></span>
+   </div>
+  </div>
+
+  <div class="field-set">
+    <div class="field invalid">
+       <label> Field name: </label>
+       <input type="type" name="name" value="" />
+       <span class="validation">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+       </span>
+    </div>
+
+    <div class="field">
+      <label> Field name: </label>
+      <input type="type" name="name" value="" />
+      <span class="validation">
+         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+      </span>
+   </div>
+  </div>
+
+  <div class="field-set">
+    <div class="field invalid">
+       <label> Field name: </label>
+       <input type="type" name="name" value="" />
+       <span class="validation">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+       </span>
+    </div>
+
+    <div class="field">
+      <label> Field name: </label>
+      <input type="type" name="name" value="" />
+      <span class="validation">
+         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+      </span>
+   </div>
+  </div>
+
+  <div class="field-set">
+    <div class="field invalid">
+       <label> Field name: </label>
+       <input type="type" name="name" value="" />
+       <span class="validation">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+       </span>
+    </div>
+
+    <div class="field">
+      <label> Field name: </label>
+      <input type="type" name="name" value="" />
+      <span class="validation">
+         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+      </span>
+   </div>
+  </div>
+
+  <div class="field-set">
+    <div class="field invalid">
+       <label> Field name: </label>
+       <input type="type" name="name" value="" />
+       <span class="validation">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+       </span>
+    </div>
+
+    <div class="field">
+      <label> Field name: </label>
+      <input type="type" name="name" value="" />
+      <span class="validation">
+         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+      </span>
+   </div>
+  </div>
+
+  <div class="field-set">
+    <div class="field invalid">
+       <label> Field name: </label>
+       <input type="type" name="name" value="" />
+       <span class="validation">
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+       </span>
+    </div>
+
+    <div class="field">
+      <label> Field name: </label>
+      <input type="type" name="name" value="" />
+      <span class="validation">
+         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit nisi veritatis impedit commodi nemo excepturi.
+      </span>
+   </div>
+  </div>
+</div>
+  
+</body>
+</html>

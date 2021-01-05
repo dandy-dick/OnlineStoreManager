@@ -46,7 +46,7 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<CategoryAddActionModel>();
+            var modelError = ModelStateDictionary<CategoryAddActionModel>();
             return Result.Fail(null, modelError);
         }
 
@@ -56,20 +56,16 @@ namespace OnlineStoreManager.Controllers
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = GetModelStateDictionary<CategoryAddActionModel>();
+            var modelError = ModelStateDictionary<CategoryAddActionModel>();
             return Result.Fail(null, modelError);
         }
 
-        public dynamic GetList(string request)
+        public dynamic GetList()
         {
-            var obj = JsonConvert.DeserializeObject<GetListRequestModel>(request);
             var model = new CategoryGetListActionModel();
-            model.ObjectAssign(obj);
-            
             var result = model.Execute();
             return new
             {
-                status = "success",
                 records = result
             };
         }
