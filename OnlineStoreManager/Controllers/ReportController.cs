@@ -18,16 +18,28 @@ namespace OnlineStoreManager.Controllers
     {
         readonly IPageMaster _pageMaster;
 
-
         public ReportController(IPageMaster _pageMaster)
         {
             this._pageMaster = _pageMaster;
         }
 
         [Route("/Revenue")]
-        public IActionResult Index()
+        public IActionResult Index(ReportIndexActionModel model)
         {
+            model.Execute();
+            ViewBag.FromDate = model.FromDate;
+            ViewBag.ToDate = model.ToDate;
             return View();
+        }
+
+        public dynamic RevenueReport(RevenueReportActionModel model)
+        {
+            return model.Execute();
+        }
+
+        public dynamic BestSellingReport(BestSellingReportActionModel model)
+        {
+            return model.Execute();
         }
     }
 }

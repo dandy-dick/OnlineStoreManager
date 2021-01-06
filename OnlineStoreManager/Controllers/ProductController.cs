@@ -63,5 +63,15 @@ namespace OnlineStoreManager.Controllers
             var modelError = ModelStateDictionary<ProductUpdateActionModel>();
             return Result.Fail(null, modelError);
         }
+
+        public dynamic GetList()
+        {
+            var model = new ProductGetListActionModel();
+            var result = model.Execute();
+            return new
+            {
+                records = result
+            };
+        }
     }
 }

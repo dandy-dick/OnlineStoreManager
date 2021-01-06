@@ -30,6 +30,7 @@ namespace OnlineStoreManager.Models.ViewModels
             repo.ObjectAssign(this);
             repo.Execute();
             this.Orders = repo.Orders;
+
             // Pagination & Search
             //
             this.SetModelData();    

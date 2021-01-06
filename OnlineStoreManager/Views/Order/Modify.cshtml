@@ -4,12 +4,17 @@
 @model OnlineStoreManager.Models.ViewModels.OrderModifyViewModel
 @{ Layout = null; }
 @{
-    Order formValues = new Order();
-    List<OrderItem> orderItems = new List<OrderItem>();
+    Order formValues = new Order()
+    {
+       // set default value here
+       //
+       Id = Guid.NewGuid().ToString(),
+       CreatedDate = DateTime.Now.ToString("yyyy-MM-dd")
+    };
+
     if (Model.Action == CRUD.Update)
     {
        formValues.AssignProperties(Model.Order);
-       orderItems = Model.OrderItems;
     }
 }
 
@@ -19,7 +24,7 @@
       border-radius: 8px;
       transform: scale(0.95);
    ">
-      <div class="form-container" style="width:400px;">
+      <div id="order-form" class="form-container" style="width: 400px;">
          <div class="field-set">
             <div class="field">
                <label> Mã đơn hàng: </label>
@@ -28,28 +33,28 @@
 
             <div class="field ">
                <label> Ngày tạo: </label>
-               <input type="text" disable value="@formValues.CreatedDate" />
+               <input type="text" name="createddate" disabled value="@formValues.CreatedDate" />
             </div>
          </div>
 
          <div class="field-set">
             <div class="field ">
                <label> Họ và tên: </label>
-               <input type="number" name="cost" value="@formValues.ReceiverName" />
-               <span class="validation" for="RequestProduct.Cost"></span>
+               <input type="text" name="receivername" value="@formValues.ReceiverName" />
+               <span class="validation" for="Order.ReceiverName"></span>
             </div>
             <div class="field ">
                <label> Số điện thoại: </label>
-               <input type="number" name="cost" value="@formValues.ReceiverPhoneNumber" />
-               <span class="validation" for="RequestProduct.Cost"></span>
+               <input type="number" name="receiverphonenumber" value="@formValues.ReceiverPhoneNumber" />
+               <span class="validation" for="Order.ReceiverPhoneNumber"></span>
             </div>
          </div>
 
          <div class="field-set">
             <div class="field ">
                <label> Địa chỉ: </label>
-               <input type="number" name="cost" value="@formValues.DeliveryAddress" />
-               <span class="validation" for="RequestProduct.Cost"></span>
+               <input type="text" name="deliveryaddress" value="@formValues.DeliveryAddress" />
+               <span class="validation" for="Order.DeliveryAddress"></span>
             </div>
          </div>
 
@@ -62,22 +67,25 @@
          </div>
       </div>
    </div>
-   
 
    <div style="padding:2rem;">
-      <div class="form-container" style="padding:0;width:500px;transform:scale(0.95);">
+      <div id="add-item-form" class="form-container" style="padding: 0;width: 500px;transform: scale(0.95);
+         position: relative;z-index: 99999;">
          <div class="field-set flex align-end">
+
             <div class="field" style="position:relative;">
                <label> Tên sản phẩm: </label>
-               <input type="text" placeholder="Nhập để tìm kiếm ... " />
+               <input id="productname" name="productname" type="text" placeholder="Nhập để tìm kiếm ... " />
             </div>
+            
             <div class="field" style="width:80px;">
                <label> Số lượng: </label>
-               <input type="number" value="1"/>
+               <input type="number" name="quantity" value="1" style="text-align:center"/>
             </div>
             <div class="field">
                <label></label>
-               <input type="submit" name="name" value="Thêm" style="padding: 0.5rem 1rem;"/>
+               <input onclick="ORDER_PAGE.onAddOrderItem()" type="submit" name="name" value="Thêm" 
+                  style="padding: 0.5rem 1rem;background-color:blue;color:white;"/>
             </div>
          </div>
       </div>

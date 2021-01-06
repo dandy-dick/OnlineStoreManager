@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using OnlineStoreManager.Database;
 using OnlineStoreManager.Infracstructure;
 using OnlineStoreManager.Models.ViewModels;
+using System.Linq;
 
 namespace OnlineStoreManager.Controllers
 {
@@ -40,23 +43,32 @@ namespace OnlineStoreManager.Controllers
         }
 
         [HttpPost]
-        public dynamic Add(OrderAddActionModel model)
-        {
-            if (ModelState.IsValid)
-                return model.Execute();
-
-            var modelError = ModelStateDictionary<OrderAddActionModel>();
-            return Result.Fail(null, modelError);
-        }
-
-        [HttpPost]
         public dynamic Update(OrderUpdateActionModel model)
         {
             if (ModelState.IsValid)
                 return model.Execute();
 
-            var modelError = ModelStateDictionary<OrderAddActionModel>();
+            var modelError = ModelStateDictionary<OrderUpdateActionModel>();
             return Result.Fail(null, modelError);
+        }
+
+        public dynamic GetOrderItems(string orderid)
+        {
+            using (var _db = new EcomContext())
+            {
+                var items = _db.OrderItems
+                    .Include(p => p.Product)
+                    .Where(p => p.OrderId == orderid)
+                    .Select(p => new
+                    {
+                        id = p.Id,
+                        quantity = p.Quantity,
+                        productname = p.Product.Name
+                    })
+                    .ToArray();
+
+                return items;
+            }
         }
     }
 }

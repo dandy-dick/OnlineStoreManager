@@ -9,7 +9,7 @@ namespace OnlineStoreManager.Database.Models
     public class Order
     {
         [Display(Name="Mã đơn hàng")]
-        public int? Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Ngày thanh toán")]
         public string CreatedDate { get; set; }

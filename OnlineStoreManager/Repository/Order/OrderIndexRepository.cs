@@ -20,7 +20,9 @@ namespace OnlineStoreManager.Repository
                 this.Orders = db.Orders.Where(p =>
                     (FromDate == null || p.CreatedDate.CompareTo(FromDate) >= 0)
                     && (ToDate == null || p.CreatedDate.CompareTo(ToDate) <= 0)
-                ).ToList();
+                )
+                .OrderBy(p => p.CreatedDate)
+                .ToList();
             }
 
             return 0;

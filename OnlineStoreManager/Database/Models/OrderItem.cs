@@ -22,7 +22,7 @@ namespace OnlineStoreManager.Database.Models
         public virtual Product Product { get; set; }
 
         [ForeignKey("OrderId")]
-        public int? OrderId { get; set; }
+        public string OrderId { get; set; }
         public virtual Order Order { get; set; }
     }
 
