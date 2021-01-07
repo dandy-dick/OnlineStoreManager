@@ -98,7 +98,7 @@ function _w2uiPagination({ container, pageSize, currentPage, totalItems }) {
             $(`${container} .next`).click(function () { that.loadNextPages(); })
 
             this.updatePagination();
-            debugger;
+            
         },
         updatePagination: function () {
             // render pagination
@@ -228,4 +228,8 @@ function autocomplete(inp, arr) {
     document.addEventListener("click", function (e) {
         closeAllLists(e.target);
     });
+}
+
+function datePicker(el) {
+   var inp = $(el).attr('')
 }

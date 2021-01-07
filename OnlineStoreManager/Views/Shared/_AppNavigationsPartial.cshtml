@@ -44,7 +44,7 @@
                {
                   id: 'level-1-1', text: '@PageMaster.GetTabName(TabName.Order)',
                   selected: @(ViewBag.TabName == TabName.Order ? "true" : "false"),
-                  onClick: () => window.location = '/@TabName.Order?TabName=@TabName.PaidOrder',
+                  onClick: () => window.location = '/@TabName.Order',
                },
             ]
          },
@@ -68,7 +68,7 @@
                }
             ]
          },
-         {
+         @*{
             id: 'level-4', text: '@PageMaster.GetPageName(PageName.Admin)',  expanded: true, group: true,
             nodes: [
                {
@@ -77,7 +77,7 @@
                   onClick: () => window.location = '/@TabName.Account',
                },
             ]
-         },
+         },*@
       ]
    });
 

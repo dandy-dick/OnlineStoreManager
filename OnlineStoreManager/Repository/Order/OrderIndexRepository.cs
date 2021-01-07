@@ -3,17 +3,28 @@ using OnlineStoreManager.Database.Models;
 using OnlineStoreManager.Infracstructure;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OnlineStoreManager.Repository
 {
     public class OrderIndexRepository: IRepository
     {
         public IEnumerable<Order> Orders { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
 
         public dynamic Execute()
         {
-            var repo = new AppRepository();
-            this.Orders = repo.Orders();
+            using (var db = new EcomContext())
+            {
+                this.Orders = db.Orders.Where(p =>
+                    (FromDate == null || p.CreatedDate.CompareTo(FromDate) >= 0)
+                    && (ToDate == null || p.CreatedDate.CompareTo(ToDate) <= 0)
+                )
+                .OrderBy(p => p.CreatedDate)
+                .ToList();
+            }
+
             return 0;
         }
     }
