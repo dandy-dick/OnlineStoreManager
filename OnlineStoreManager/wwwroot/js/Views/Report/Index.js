@@ -1,8 +1,14 @@
 ﻿
 const REPORT_PAGE = {
-    chartColors: ['#357266', '#357266', '#65532F', '#65532F', '#FF5A5F',
-        '#C81D25', '#704C5E', '#6dc0d5', '#ffd791', '#0e3b43'
+    chartColors: ['#357266', '#65532F', '#65532F', '#FF5A5F',
+        '#C81D25', '#704C5E', '#6dc0d5', '#ffd791', '#0e3b43', 'black'
     ],
+    onSelectDate: function () {
+        var fromDate = $('input[name="FromDate"]').val(),
+            toDate = $('input[name="ToDate"]').val();
+        window.location.search = "";
+        window.location.search = `?FromDate=${fromDate}&ToDate=${toDate}`;
+    },
     renderRevenueReport: function () {
         console.log('render');
         var _fromDate = $('input[name="FromDate"]').val(),
@@ -13,6 +19,9 @@ const REPORT_PAGE = {
             _data['FromDate'] = _fromDate;
         if (_toDate)
             _data['ToDate'] = _toDate;
+
+        if (!_fromDate || !_toDate)
+            return;
 
         var that = this;
         $.post('/Report/RevenueReport', _data, function(res) {
@@ -75,7 +84,14 @@ const REPORT_PAGE = {
                 columns: _columns,
                 onRender: function (e) {
                     e.onComplete = function () {
-                        this.records = res;
+                        this.records = res.map((v, index) => {
+                            return {
+                                top: index + 1,
+                                name: v.productName,
+                                quantity: v.quantity,
+                                revenue: v.revenue
+                            }
+                        });
                         this.refresh();
                     }
                 }
@@ -91,7 +107,7 @@ const REPORT_PAGE = {
                             backgroundColor: that.chartColors,
                         }
                     ],
-                    labels: res.map(p => p.name)
+                    labels: res.map(p => p.productName)
                 },
                 options: {
                     legend: {

@@ -17,15 +17,8 @@ namespace OnlineStoreManager.Models.ViewModels
         {
             if (FromDate == null)
             {
-                var year = DateTime.Now.Year;
-                year = year - 1;
-
-                FromDate = new DateTime(year, 1, 1).ToString("yyyy-MM-dd");
-            }
-
-            if (ToDate == null)
-            {
-                ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+                FromDate = DateTime.Now.Year + "-01-01";
+                ToDate = DateTime.Now.Year + "-12-31";
             }
 
             return Result.Success();

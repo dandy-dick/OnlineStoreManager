@@ -152,7 +152,7 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
             return `
                   <button class="_small_btn"
                      style="${toolbarItemStyle}"
-                     onclick="ORDER_PAGE.onSelectDate()">Lọc
+                     onclick="REPORT_PAGE.onSelectDate()">Lọc
                   </button>`;
          },
       },
@@ -168,6 +168,18 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
       onRender: function (e) {
          e.onComplete = function () {
             // date picker
+            function dateToString(date) {
+               date = new Date(date);
+               var dd = date.getDate();
+               var mm = date.getMonth() + 1; //January is 0!
+               var yyyy = date.getFullYear();
+               if (dd < 10)
+                  dd = '0' + dd
+               if (mm < 10)
+                  mm = '0' + mm
+               return yyyy + '-' + mm + '-' + dd;
+            }
+
             function formatDate(date) {
                date = new Date(date);
                var dd = date.getDate();
@@ -185,24 +197,16 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
             //
             $('input[name="FromDate"]').val(_fromDate);
             $('input[name="ToDate"]').val(_toDate);
-            if (_fromDate) {
-               $('input[name="FromDate"]')
-                  .attr('data-date', 'Từ: ' + formatDate(_fromDate));
-            }
+            $('input[name="FromDate"]')
+               .attr('data-date', 'Từ: ' + formatDate(_fromDate));
             $('input[name="ToDate"]')
                .attr('data-date', 'Đến: ' + formatDate(_toDate));
-            // set options
-            //
-            $('input[name="FromDate"]').attr('max', formatDate(new Date()));
-            $('input[name="ToDate"]').attr('max', formatDate(new Date()));
+
             // handle events
             $('input[name="FromDate"]').change(function (e) {
 
                var fromDate = $('input[name="FromDate"]').val(),
                   toDate = $('input[name="ToDate"]').val();
-
-               if (!fromDate)
-                  return;
 
                $('input[name="FromDate"]')
                   .attr('data-date', 'Từ: ' + formatDate(fromDate));
@@ -213,7 +217,16 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
                   $('input[name="ToDate"]')
                      .attr('data-date', 'Đến: ' + formatDate(fromDate));
                }
+
+               // đổi toDate.Year về = fromDate.Year
+               var year = (new Date(fromDate)).getFullYear();
+               var _toDate = new Date(toDate);
+               _toDate.setFullYear(year);
+               $('input[name="ToDate"]').val(dateToString(_toDate));
+               $('input[name="ToDate"]')
+                  .attr('data-date', 'Đến: ' + formatDate(_toDate));
             });
+
             $('input[name="ToDate"]').change(function (e) {
                var fromDate = $('input[name="FromDate"]').val(),
                   toDate = $('input[name="ToDate"]').val();
@@ -230,6 +243,14 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
                   $('input[name="FromDate"]')
                      .attr('data-date', 'Từ: ' + formatDate(toDate));
                }
+
+               // đổi fromDate.Year về = toDate.Year
+               var year = (new Date(toDate)).getFullYear();
+               var _fromDate = new Date(fromDate);
+               _fromDate.setFullYear(year);
+               $('input[name="FromDate"]').val(dateToString(_fromDate));
+               $('input[name="FromDate"]')
+                  .attr('data-date', 'Đến: ' + formatDate(_fromDate));
             });
          }
       }
@@ -245,19 +266,16 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
          {
             type: 'main', content: html, style: panelStyle
          },
-      ],
-      onRender: function (e) {
-         e.onComplete = function () {
-            // request product list
-
-            REPORT_PAGE.renderRevenueReport();
-            REPORT_PAGE.renderBestSellerReport();
-         }
-      }
+      ]
    });
 
    w2ui['_revenue_report'].content('top', w2ui['_toolbar_top']);
    w2ui['_main_content'].content('main', w2ui['_revenue_report']);
+
+   setTimeout(() => {
+      REPORT_PAGE.renderRevenueReport();
+      REPORT_PAGE.renderBestSellerReport();
+   }, 500);
 </script>
 
 
