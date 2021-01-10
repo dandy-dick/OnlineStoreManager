@@ -273,8 +273,7 @@ width: 100%;box-sizing: border-box;padding: 1.25rem;
    w2ui['_main_content'].content('main', w2ui['_revenue_report']);
 
    setTimeout(() => {
-      REPORT_PAGE.renderRevenueReport();
-      REPORT_PAGE.renderBestSellerReport();
+      REPORT_PAGE.renderRevenueReport(() => REPORT_PAGE.renderBestSellerReport());
    }, 500);
 </script>
 

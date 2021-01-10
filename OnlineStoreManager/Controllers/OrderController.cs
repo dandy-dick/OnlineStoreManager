@@ -21,7 +21,7 @@ namespace OnlineStoreManager.Controllers
         public IActionResult Index(OrderIndexActionModel model)
         {
             PageMaster.SetTabName(model.TabName);
-            ViewBag.TabName = model.TabName;
+            ViewBag.TabName = TabName.Order;
 
             var viewModel = model.Execute();
             return View(viewModel);

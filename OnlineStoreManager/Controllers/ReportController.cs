@@ -29,6 +29,7 @@ namespace OnlineStoreManager.Controllers
             model.Execute();
             ViewBag.FromDate = model.FromDate;
             ViewBag.ToDate = model.ToDate;
+            ViewBag.TabName = TabName.Revenue;
             return View();
         }
 

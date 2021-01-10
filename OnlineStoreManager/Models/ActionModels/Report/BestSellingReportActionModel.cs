@@ -9,11 +9,14 @@ using OnlineStoreManager.Repository;
 
 namespace OnlineStoreManager.Models.ViewModels
 {
-    public class ReportOrderItem: OrderItem
+    public class OrderItemRevenue
     {
-        public double Revenue { get; set; }
         public string ProductName { get; set; }
+        public double Revenue { get; set; }
+        public double Quantity { get; set; }
     }
+
+
     public class BestSellingReportActionModel : IControllerActionModel
     {
 
@@ -28,54 +31,37 @@ namespace OnlineStoreManager.Models.ViewModels
              */
 
             using var db = new EcomContext();
-            var lookUp = db.Orders.Include(p => p.OrderItems)
+            var orderItems = db.Orders
                 .Where(p =>
-                    (FromDate == null || p.CreatedDate.CompareTo(FromDate) >= 0)
-                    && (ToDate == null || p.CreatedDate.CompareTo(ToDate) <= 0)
+                    (p.CreatedDate.CompareTo(FromDate) >= 0)
+                    && (p.CreatedDate.CompareTo(ToDate) <= 0)
                 )
-                .SelectMany(p => p.OrderItems)
-                .Select(p => new ReportOrderItem
+                .SelectMany(p => p.OrderItems, (o, item) => new OrderItemRevenue
                 {
-                    Quantity = p.Quantity,
-                    Revenue = p.Quantity * p.Product.Price,
-                    ProductId = p.ProductId,
-                    ProductName = p.Product.Name
-                })
-                .ToLookup(p => p.ProductId);
+                    ProductName = item.Product.Name,
+                    Revenue = item.Quantity * item.Product.Price,
+                    Quantity = item.Quantity
+                });
 
-            var productRevenueSummary = new List<ReportOrderItem>();
+
+            var lookUp = orderItems.ToLookup(p => p.ProductName);
+
+            var productRevenueSummary = new List<OrderItemRevenue>();
             foreach (var item in lookUp)
             {
                 var _temp = item.First();
-                productRevenueSummary.Add(new ReportOrderItem
-                { 
-                    ProductId = _temp.ProductId,
+                productRevenueSummary.Add(new OrderItemRevenue
+                {
                     ProductName = _temp.ProductName,
                     Quantity = item.Sum(p => p.Quantity),
                     Revenue = item.Sum(p => p.Revenue)
                 });
             }
 
-            var result = productRevenueSummary
+            return productRevenueSummary
                 .OrderByDescending(p => p.Revenue)
                 .Take(10)
                 .ToArray();
-
-            //if (productRevenueSummary.Count() > 10)
-            //{
-            //    var left = productRevenueSummary
-            //        .OrderBy(p => p.Revenue)
-            //        .Skip(10);
-            //    result[10] = new ReportOrderItem
-            //    {
-            //        ProductId = null,
-            //        ProductName = "Các sản phẩm khác",
-            //        Quantity = left.Sum(p => p.Quantity),
-            //        Revenue = left.Sum(p => p.Revenue)
-            //    };
-            //}
-
-            return result;
         }
     }
 }

@@ -9,8 +9,7 @@ const REPORT_PAGE = {
         window.location.search = "";
         window.location.search = `?FromDate=${fromDate}&ToDate=${toDate}`;
     },
-    renderRevenueReport: function () {
-        console.log('render');
+    renderRevenueReport: function (_callBack) {
         var _fromDate = $('input[name="FromDate"]').val(),
             _toDate = $('input[name="ToDate"]').val();
 
@@ -45,6 +44,9 @@ const REPORT_PAGE = {
                 type: 'bar',
                 data: chartOptions,
             });
+
+            // render next chart
+            _callBack();
         });
     },
     renderBestSellerReport: function () {

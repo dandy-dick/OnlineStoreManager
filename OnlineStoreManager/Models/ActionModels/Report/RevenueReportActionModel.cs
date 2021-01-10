@@ -9,6 +9,11 @@ using OnlineStoreManager.Repository;
 
 namespace OnlineStoreManager.Models.ViewModels
 {
+    public class RevenueReportModel
+    {
+        public double Revenue { get; set; }
+        public double Profit { get; set; }
+    }
     public class RevenueReportActionModel : IControllerActionModel
     {
         public string FromDate { get; set; }
@@ -31,13 +36,14 @@ namespace OnlineStoreManager.Models.ViewModels
                         (_fromDate == null || p.CreatedDate.CompareTo(_fromDate) >= 0)
                         && (_toDate == null || p.CreatedDate.CompareTo(_toDate) <= 0)
                     ).SelectMany(p => p.OrderItems);
+
                 // loop 12 month and calculate revenue, profit
                 //
                 DateTime startDate = DateTime.Parse(FromDate),
                     endDate = DateTime.Parse(ToDate);
                 int startMonth = startDate.Month, endMonth = endDate.Month, year = startDate.Year;
                 var chartData = new double[14];
-                double revenue = 0, profit = 0, monthRevenue = 0, monthProfit = 0;
+                double revenue = 0, profit = 0;
                 for (int i = 1; i <= 12; i++)
                 {
                     if (startMonth <= i && i <= endMonth)
@@ -48,15 +54,20 @@ namespace OnlineStoreManager.Models.ViewModels
                         _fromDate = year + "-" + ((i < 10) ? "0" + i : i.ToString()) + "-" + ((startDay < 10) ? "0" + startDay : startDay.ToString());
                         _toDate = year + "-" + ((i < 10) ? "0" + i : i.ToString()) + "-" + ((endDay < 10) ? "0" + endDay : endDay.ToString());
 
-                        monthRevenue = query
-                            .Sum(p => p.Quantity * p.Product.Price);
-                        monthProfit = query
-                            .Sum(p => p.Quantity * (p.Product.Price - p.Product.Cost));
+                        var monthReport = query.Select(p => new RevenueReportModel
+                        {
+                            Revenue = query.Sum(p => p.Quantity * p.Product.Price),
+                            Profit = query.Sum(p => p.Quantity * (p.Product.Price - p.Product.Cost))
+                        })
+                        .FirstOrDefault();
 
-                        revenue += monthRevenue;
-                        profit += monthProfit;
+                        if (monthReport == null)
+                            monthReport = new RevenueReportModel();
 
-                        chartData[i] = monthRevenue;
+                        revenue += monthReport.Revenue;
+                        profit += monthReport.Profit;
+
+                        chartData[i] = monthReport.Revenue;
                     }
                 }
 
